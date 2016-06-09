@@ -6,10 +6,10 @@ package ca.kanoa.battleship;
 public class Config {
 
     // menu and state information
-    public static final int SCREEN_SPLASH = 0;
-    public static final int SCREEN_MAINMENU = 1;
-    public static final int SCREEN_LOBBY = 2;
-    public static final int SCREEN_GAME = 0;
+    public static final int SCREEN_SPLASH = 1;
+    public static final int SCREEN_MAINMENU = 2;
+    public static final int SCREEN_LOBBY = 3;
+    public static final int SCREEN_GAME = 4;
 
     // window information
     public static final int WINDOW_WIDTH = 640;

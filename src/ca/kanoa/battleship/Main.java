@@ -13,14 +13,18 @@ public class Main {
      * @param args The command line arguments
      */
     public static void main(String[] args) {
-        if (args[1].contains("server")) {
+        // check if any server argument was passed in, if not, start the client
+        if (args.length > 0 && args[1].contains("server")) {
 
         } else {
             try {
+                // create and configure a container for the game
                 AppGameContainer container = new AppGameContainer(new Battleship());
                 container.setDisplayMode(Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT, false);
+                container.setIcons(new String[]{"img/icon/16x16.tga", "img/icon/24x24.tga", "img/icon/32x32.tga"});
                 container.setTargetFrameRate(Config.FPS);
                 container.setShowFPS(Config.SHOW_FPS);
+                // begin the game
                 container.start();
             } catch (SlickException e) {
                 e.printStackTrace();
