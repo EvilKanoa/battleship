@@ -11,6 +11,6 @@ hs_err_pid*
 .idea/
 *.iml
 *.xml
-*.mf
 nbproject/
 build/
+out/
