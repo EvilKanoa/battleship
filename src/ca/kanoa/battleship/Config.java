@@ -15,6 +15,6 @@ public class Config {
     public static final int WINDOW_WIDTH = 640;
     public static final int WINDOW_HEIGHT = 480;
     public static final int FPS = 60;
-    public static final boolean SHOW_FPS = true;
+    public static final boolean SHOW_FPS = false;
 
 }
