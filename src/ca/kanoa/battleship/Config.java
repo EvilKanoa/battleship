@@ -19,5 +19,6 @@ public class Config {
 
     // network information
     public static final int NETWORK_PORT = 20001;
+    public static final String GLOBAL_SERVER = "localhost";
 
 }

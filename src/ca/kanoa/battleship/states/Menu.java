@@ -4,9 +4,13 @@ import ca.kanoa.battleship.Battleship;
 import ca.kanoa.battleship.Config;
 import ca.kanoa.battleship.input.Button;
 import ca.kanoa.battleship.input.ButtonListener;
+import ca.kanoa.battleship.network.BaseClient;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
+
+import javax.swing.*;
+import java.io.IOException;
 
 /**
  * Created by kanoa on 2016-06-09.
@@ -59,6 +63,18 @@ public class Menu extends BasicGameState implements ButtonListener {
     @Override
     public void buttonPressed(String button, int mouseX, int mouseY) {
         if (button.equals("connect")) {
+            String username = JOptionPane.showInputDialog("Please enter a username");
+            if (username == null || username.length() == 0) {
+                return;
+            }
+            try {
+                battleship.setNetwork(new BaseClient(Config.GLOBAL_SERVER, username));
+                battleship.enterState(Config.SCREEN_LOBBY);
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Unable to connect...");
+            }
+            System.out.println(username);
             // TODO: Connect to lobby
         } else if (button.equals("exit")) {
             System.exit(0);

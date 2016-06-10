@@ -1,6 +1,7 @@
 package ca.kanoa.battleship;
 
 import ca.kanoa.battleship.input.Button;
+import ca.kanoa.battleship.network.BaseClient;
 import ca.kanoa.battleship.states.Game;
 import ca.kanoa.battleship.states.Lobby;
 import ca.kanoa.battleship.states.Menu;
@@ -15,6 +16,7 @@ public class Battleship extends StateBasedGame {
     protected final Lobby lobbyState;
     protected final Menu menuState;
     protected final Splash splashState;
+    private BaseClient networkClient;
 
     public Battleship() {
         super("BATTLESHIP");
@@ -31,6 +33,14 @@ public class Battleship extends StateBasedGame {
         this.addState(gameState);
         this.addState(lobbyState);
         this.addState(menuState);
+    }
+
+    public BaseClient getNetwork() {
+        return this.networkClient;
+    }
+
+    public void setNetwork(BaseClient client) {
+        this.networkClient = client;
     }
 
 }
