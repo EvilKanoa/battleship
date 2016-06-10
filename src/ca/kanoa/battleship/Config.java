@@ -17,4 +17,7 @@ public class Config {
     public static final int FPS = 60;
     public static final boolean SHOW_FPS = false;
 
+    // network information
+    public static final int NETWORK_PORT = 20001;
+
 }
