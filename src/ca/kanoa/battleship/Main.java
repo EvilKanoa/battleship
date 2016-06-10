@@ -1,5 +1,6 @@
 package ca.kanoa.battleship;
 
+import ca.kanoa.battleship.input.Button;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 

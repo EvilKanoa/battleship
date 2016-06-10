@@ -1,24 +1,57 @@
 package ca.kanoa.battleship.input;
 
+import ca.kanoa.battleship.Config;
+import org.lwjgl.input.Mouse;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.MouseListener;
 
+import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by kanoa on 2016-06-09.
- */
-public class Button implements MouseListener {
+public class Button {
 
     private Set<ButtonListener> listeners;
     private final String id;
+    private Image main, hover;
+    int x, y, width, height;
+    private boolean mouseOver;
+    private boolean enable;
+    private boolean wasPressed;
 
-    public Button(String buttonID) {
+    public Button(String buttonID, Image main, Image hover, int x, int y, int width, int height) {
         this.id = buttonID;
+        this.main = main;
+        this.hover = hover;
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.mouseOver = false;
+        this.wasPressed = false;
+        this.listeners = new HashSet<ButtonListener>();
+        enable();
+    }
+
+    public void enable() {
+        this.enable = true;
+    }
+
+    public void disable() {
+        this.enable = false;
     }
 
     public String getId() {
         return id;
+    }
+
+    public void render() {
+        if (enable && mouseOver) {
+            hover.draw(x, y, width, height);
+        } else if (enable) {
+            main.draw(x, y, width, height);
+        }
     }
 
     public void addListener(ButtonListener listener) {
@@ -29,40 +62,23 @@ public class Button implements MouseListener {
         return listeners.remove(listener);
     }
 
-    @Override
-    public void mouseReleased(int i, int i1, int i2) {
-
+    public void update() {
+        int xPos = Mouse.getX();
+        int yPos = Config.WINDOW_HEIGHT - Mouse.getY();
+        if (xPos >= x && xPos <= (x + width) && yPos >= y && yPos <= (y + height)) {
+            // set the current state
+            mouseOver = true;
+            // check if the button has been pressed
+            if (enable && !Mouse.isButtonDown(0) && wasPressed) {
+                // call the listeners
+                for (ButtonListener listener : listeners) {
+                    listener.buttonPressed(getId(), xPos, yPos);
+                }
+            }
+        } else {
+            mouseOver = false;
+        }
+        wasPressed = Mouse.isButtonDown(0);
     }
-
-    @Override
-    public void mouseMoved(int i, int i1, int i2, int i3) {
-
-    }
-
-    @Override
-    public void mouseWheelMoved(int i) {}
-
-    @Override
-    public void mouseClicked(int i, int i1, int i2, int i3) {}
-
-    @Override
-    public void mousePressed(int i, int i1, int i2) {}
-
-    @Override
-    public void mouseDragged(int i, int i1, int i2, int i3) {}
-
-    @Override
-    public void setInput(Input input) {}
-
-    @Override
-    public boolean isAcceptingInput() {
-        return false;
-    }
-
-    @Override
-    public void inputEnded() {}
-
-    @Override
-    public void inputStarted() {}
 
 }

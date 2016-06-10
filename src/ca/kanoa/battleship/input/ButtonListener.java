@@ -5,6 +5,6 @@ package ca.kanoa.battleship.input;
  */
 public interface ButtonListener {
 
-    void buttonPressed(String button);
+    void buttonPressed(String button, int mouseX, int mouseY);
 
 }

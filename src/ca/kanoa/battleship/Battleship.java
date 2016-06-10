@@ -1,5 +1,6 @@
 package ca.kanoa.battleship;
 
+import ca.kanoa.battleship.input.Button;
 import ca.kanoa.battleship.states.Game;
 import ca.kanoa.battleship.states.Lobby;
 import ca.kanoa.battleship.states.Menu;
@@ -17,6 +18,7 @@ public class Battleship extends StateBasedGame {
 
     public Battleship() {
         super("BATTLESHIP");
+
         gameState = new Game(this);
         lobbyState = new Lobby(this);
         menuState = new Menu(this);
