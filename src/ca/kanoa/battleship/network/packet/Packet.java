@@ -15,7 +15,7 @@ public abstract class Packet {
             case Config.PACKET_KEEP_ALIVE_ID:
                 return new KeepAlivePacket();
             case Config.PACKET_USERNAME_ID:
-                String username = new String(Arrays.copyOfRange(data, 2, data.length));
+                String username = new String(Arrays.copyOfRange(data, 1, data.length));
                 return new UsernamePacket(username);
             default:
                 return null;

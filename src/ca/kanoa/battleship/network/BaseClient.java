@@ -4,6 +4,7 @@ import ca.kanoa.battleship.Config;
 import ca.kanoa.battleship.network.packet.UsernamePacket;
 import ca.kanoa.battleship.util.Timer;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -13,6 +14,7 @@ public class BaseClient extends Thread {
     private Socket socket;
     private PacketHandler packetHandler;
     private Timer timer;
+    private boolean connected = false;
 
     public BaseClient(String serverAddress) {
         this.serverAddress = serverAddress;
@@ -21,9 +23,10 @@ public class BaseClient extends Thread {
     public boolean connect(String username) {
         try {
             socket = new Socket(serverAddress, Config.NETWORK_PORT);
-            packetHandler = new PacketHandler(socket);
+            packetHandler = new PacketHandler(socket, Config.NETWORK_TIMEOUT);
             packetHandler.sendPacket(new UsernamePacket(username));
             timer = new Timer(Config.NETWORK_TIMEOUT);
+            this.connected = true;
             super.start();
             return true;
         } catch (IOException e) {
@@ -34,11 +37,20 @@ public class BaseClient extends Thread {
 
     private void update() {
         packetHandler.update();
+
+        // check if the server  is still connected
+        if (!packetHandler.connected()) {
+            JOptionPane.showMessageDialog (null, "The server has disconnected", "Server Error",
+                    JOptionPane.ERROR_MESSAGE);
+            connected = false;
+            System.exit(2);
+            return;
+        }
     }
 
     @Override
     public void run() {
-        while (true) {
+        while (connected) {
             update();
         }
     }

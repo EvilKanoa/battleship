@@ -29,10 +29,15 @@ public class BaseServer {
     }
 
     private void update() throws IOException {
-        Socket client = serverSocket.accept();
-        ClientHandler newClient = new ClientHandler(new ClientConnection(client), this);
+        Socket socket = serverSocket.accept();
+        ClientHandler newClient = new ClientHandler(socket, this);
         clients.add(newClient);
         console("New client connected: " + newClient.getUsername());
+
+        console("Current clients: ");
+        for (ClientHandler client : clients) {
+            console("\t" + client.getUsername());
+        }
     }
 
     public void console(String source, String message) {
@@ -45,6 +50,10 @@ public class BaseServer {
 
     public void console(ClientHandler source, String message) {
         console(source.getUsername(), message);
+    }
+
+    protected void removeClient(ClientHandler client) {
+        clients.remove(client);
     }
 
 }
