@@ -8,10 +8,17 @@ public class Timer {
     private long stopwatchStart;
     private long delay;
 
+    /**
+     * Creates a new timer with only stopwatch functionality
+     */
     public Timer() {
-        reset();
+        this(0);
     }
 
+    /**
+     * Creates a new timer with both stopwatch and timer functionality
+     * @param delay The time to check in miliseconds
+     */
     public Timer(long delay) {
         this.delay = delay;
         reset();

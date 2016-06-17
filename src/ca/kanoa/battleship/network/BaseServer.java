@@ -14,12 +14,15 @@ public class BaseServer {
     private Set<ClientHandler> clients;
 
     public BaseServer() throws IOException {
+        console("Starting server...");
+        console("Initiating network...");
         serverSocket = new ServerSocket(Config.NETWORK_PORT);
+        console("Network started");
         clients = new HashSet<ClientHandler>();
-        loop();
     }
 
-    private void loop() throws IOException {
+    public void loop() throws IOException {
+        console("Server started");
         while(true) {
             update();
         }
@@ -27,7 +30,21 @@ public class BaseServer {
 
     private void update() throws IOException {
         Socket client = serverSocket.accept();
-        clients.add(new ClientHandler(new ClientConnection(client)));
+        ClientHandler newClient = new ClientHandler(new ClientConnection(client), this);
+        clients.add(newClient);
+        console("New client connected: " + newClient.getUsername());
+    }
+
+    public void console(String source, String message) {
+        System.out.printf("%s -> %s\n", source, message);
+    }
+
+    public void console(String message) {
+        console("server", message);
+    }
+
+    public void console(ClientHandler source, String message) {
+        console(source.getUsername(), message);
     }
 
 }

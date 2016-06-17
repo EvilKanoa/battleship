@@ -64,8 +64,8 @@ public class Menu extends BasicGameState implements ButtonListener {
             if (username == null || username.length() == 0) {
                 return;
             }
-            battleship.setNetwork(new BaseClient(Config.GLOBAL_SERVER, username));
-            if (battleship.getNetwork().connect()) {
+            battleship.setNetwork(new BaseClient(Config.GLOBAL_SERVER));
+            if (battleship.getNetwork().connect(username)) {
                 battleship.enterState(Config.SCREEN_LOBBY);
             } else {
                 JOptionPane.showMessageDialog(null, "Unable to connect...");

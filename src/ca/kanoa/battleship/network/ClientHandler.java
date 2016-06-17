@@ -9,9 +9,11 @@ public class ClientHandler extends Thread {
     private ClientConnection client;
     private PacketHandler packetHandler;
 
-    public ClientHandler(ClientConnection client) throws IOException {
+    public ClientHandler(ClientConnection client, BaseServer server) throws IOException {
+        this.server = server;
         this.client = client;
         this.packetHandler = new PacketHandler(client.socket);
+        super.start();
     }
 
     @Override
