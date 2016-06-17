@@ -1,5 +1,6 @@
 package ca.kanoa.battleship.network;
 
+import java.io.*;
 import java.net.Socket;
 
 public class ClientConnection {
@@ -8,10 +9,10 @@ public class ClientConnection {
     protected String username;
     protected long updated;
 
-    public ClientConnection(Socket socket) {
+    public ClientConnection(Socket socket) throws IOException {
         this.socket = socket;
         this.updated = System.currentTimeMillis();
-        this.username = null;
+        this.username = socket.getInetAddress().toString();
     }
 
 }

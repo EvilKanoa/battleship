@@ -1,17 +1,17 @@
 package ca.kanoa.battleship.network;
 
+import java.io.IOException;
 import java.net.Socket;
 
-/**
- * Created by kanoa on 2016-06-09.
- */
 public class ClientHandler extends Thread {
 
     private BaseServer server;
     private ClientConnection client;
+    private PacketHandler packetHandler;
 
-    public ClientHandler(ClientConnection client) {
+    public ClientHandler(ClientConnection client) throws IOException {
         this.client = client;
+        this.packetHandler = new PacketHandler(client.socket);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class ClientHandler extends Thread {
     }
 
     private void loop() {
-
+        packetHandler.update();
     }
 
     public ClientConnection getClient() {

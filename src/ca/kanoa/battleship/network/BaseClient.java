@@ -1,32 +1,26 @@
 package ca.kanoa.battleship.network;
 
 import ca.kanoa.battleship.Config;
-import ca.kanoa.battleship.network.packet.Packet;
+import ca.kanoa.battleship.network.packet.UsernamePacket;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BaseClient extends Thread {
 
     private String serverAddress;
     private Socket socket;
-    private List<Packet> packets;
+    private PacketHandler packetHandler;
 
     public BaseClient(String serverAddress) {
         this.serverAddress = serverAddress;
-        packets = new ArrayList<Packet>();
     }
 
-    public BaseClient(String serverAddress, String username) {
-        this(serverAddress);
-        // TODO: Send username packet
-    }
-
-    public boolean connect() {
+    public boolean connect(String username) {
         try {
-            this.socket = new Socket(serverAddress, Config.NETWORK_PORT);
+            socket = new Socket(serverAddress, Config.NETWORK_PORT);
+            packetHandler = new PacketHandler(socket);
+            packetHandler.sendPacket(new UsernamePacket(username));
             super.start();
             return true;
         } catch (IOException e) {
@@ -35,19 +29,8 @@ public class BaseClient extends Thread {
         }
     }
 
-    public synchronized Packet[] getRecievedPackets() {
-        Packet[] array = packets.toArray(new Packet[0]);
-        packets.clear();
-        return array;
-    }
-
-    public synchronized boolean sendPacket(Packet packet) {
-        // TODO: Add network communication
-        return false;
-    }
-
     private void update() {
-
+        packetHandler.update();
     }
 
     @Override

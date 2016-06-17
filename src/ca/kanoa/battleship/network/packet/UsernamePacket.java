@@ -16,19 +16,13 @@ public class UsernamePacket extends Packet {
     }
 
     @Override
-    public int getLength() {
-        return -1;
-    }
-
-    @Override
     public byte[] toData() {
-        byte[] data = new byte[2 + username.length()];
-        data[0] = getID();
         byte[] chars = username.getBytes();
+        byte[] data = new byte[1 + chars.length];
+        data[0] = getID();
         for (int i = 0; i < chars.length; i++) {
             data[i + 1] = chars[i];
         }
-        data[1 + username.length()] = Config.END_PACKET_BYTE;
         return data;
     }
 
