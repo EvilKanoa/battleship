@@ -1,30 +1,29 @@
 package ca.kanoa.battleship;
 
-import ca.kanoa.battleship.input.Button;
 import ca.kanoa.battleship.network.BaseClient;
-import ca.kanoa.battleship.states.Game;
-import ca.kanoa.battleship.states.Lobby;
-import ca.kanoa.battleship.states.Menu;
-import ca.kanoa.battleship.states.Splash;
+import ca.kanoa.battleship.states.GameState;
+import ca.kanoa.battleship.states.LobbyState;
+import ca.kanoa.battleship.states.MenuState;
+import ca.kanoa.battleship.states.SplashState;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class Battleship extends StateBasedGame {
 
-    protected final Game gameState;
-    protected final Lobby lobbyState;
-    protected final Menu menuState;
-    protected final Splash splashState;
+    protected final GameState gameState;
+    protected final LobbyState lobbyState;
+    protected final MenuState menuState;
+    protected final SplashState splashState;
     private BaseClient networkClient;
 
     public Battleship() {
         super("BATTLESHIP");
 
-        gameState = new Game(this);
-        lobbyState = new Lobby(this);
-        menuState = new Menu(this);
-        splashState = new Splash(this);
+        gameState = new GameState(this);
+        lobbyState = new LobbyState(this);
+        menuState = new MenuState(this);
+        splashState = new SplashState(this);
     }
 
     @Override

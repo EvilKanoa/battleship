@@ -11,17 +11,17 @@ import org.newdawn.slick.state.StateBasedGame;
 /**
  * Created by kanoa on 2016-06-09.
  */
-public class Lobby extends BasicGameState {
+public class GameState extends BasicGameState {
 
     private Battleship battleship;
 
-    public Lobby(Battleship battleship) {
+    public GameState(Battleship battleship) {
         this.battleship = battleship;
     }
 
     @Override
     public int getID() {
-        return Config.SCREEN_LOBBY;
+        return Config.SCREEN_GAME;
     }
 
     @Override

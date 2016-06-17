@@ -12,7 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 import javax.swing.*;
 import java.io.IOException;
 
-public class Menu extends BasicGameState implements ButtonListener {
+public class MenuState extends BasicGameState implements ButtonListener {
 
     private Battleship battleship;
     private Button connectButton;
@@ -21,7 +21,7 @@ public class Menu extends BasicGameState implements ButtonListener {
     private Sound buttonSound;
     private boolean connecting;
 
-    public Menu(Battleship battleship) {
+    public MenuState(Battleship battleship) {
         this.battleship = battleship;
         this.connecting = false;
     }
