@@ -20,5 +20,10 @@ public class Config {
     // network information
     public static final int NETWORK_PORT = 20001;
     public static final String GLOBAL_SERVER = "localhost";
+    public static final byte END_PACKET_BYTE = 0x7F;
+
+    // packet IDs
+    public static final byte PACKET_KEEP_ALIVE_ID = 0x00;
+    public static final byte PACKET_USERNAME_ID = 0x01;
 
 }

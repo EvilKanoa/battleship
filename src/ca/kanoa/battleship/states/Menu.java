@@ -12,9 +12,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import javax.swing.*;
 import java.io.IOException;
 
-/**
- * Created by kanoa on 2016-06-09.
- */
 public class Menu extends BasicGameState implements ButtonListener {
 
     private Battleship battleship;
@@ -67,14 +64,12 @@ public class Menu extends BasicGameState implements ButtonListener {
             if (username == null || username.length() == 0) {
                 return;
             }
-            try {
-                battleship.setNetwork(new BaseClient(Config.GLOBAL_SERVER, username));
+            battleship.setNetwork(new BaseClient(Config.GLOBAL_SERVER, username));
+            if (battleship.getNetwork().connect()) {
                 battleship.enterState(Config.SCREEN_LOBBY);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
                 JOptionPane.showMessageDialog(null, "Unable to connect...");
             }
-            System.out.println(username);
             // TODO: Connect to lobby
         } else if (button.equals("exit")) {
             System.exit(0);

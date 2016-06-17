@@ -1,6 +1,7 @@
 package ca.kanoa.battleship.network;
 
 import ca.kanoa.battleship.Config;
+import ca.kanoa.battleship.network.packet.Packet;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -13,16 +14,25 @@ public class BaseClient extends Thread {
     private Socket socket;
     private List<Packet> packets;
 
-    public BaseClient(String serverAddress) throws IOException {
+    public BaseClient(String serverAddress) {
         this.serverAddress = serverAddress;
-        this.socket = new Socket(serverAddress, Config.NETWORK_PORT);
         packets = new ArrayList<Packet>();
-        start();
     }
 
-    public BaseClient(String serverAddress, String username) throws IOException {
+    public BaseClient(String serverAddress, String username) {
         this(serverAddress);
         // TODO: Send username packet
+    }
+
+    public boolean connect() {
+        try {
+            this.socket = new Socket(serverAddress, Config.NETWORK_PORT);
+            super.start();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public synchronized Packet[] getRecievedPackets() {
