@@ -56,7 +56,6 @@ public class ClientHandler extends Thread {
                     server.console(this, "New username for me: " + username);
                     break;
                 case Config.PACKET_LIST_PLAYERS:
-                    server.console(this, "list players");
                     List<String> players = server.getPlayers();
                     players.remove(username);
                     packetHandler.sendPacket(new ListPlayersPacket(players));

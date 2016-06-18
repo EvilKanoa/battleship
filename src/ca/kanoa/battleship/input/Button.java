@@ -13,7 +13,7 @@ public class Button {
     private String id;
     private Image main, hover;
     private Sound sound;
-    float x, y, width, height;
+    protected float x, y, width, height;
     private boolean mouseOver;
     private boolean enable;
     private boolean wasPressed;

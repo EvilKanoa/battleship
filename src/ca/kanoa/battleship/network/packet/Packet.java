@@ -22,7 +22,7 @@ public abstract class Packet {
             case Config.PACKET_LIST_PLAYERS:
                 ArrayList<String> players = new ArrayList<String>((data.length - 1) / 24);
                 for (int i = 0; i < (data.length - 1) / 24; i++) {
-                    players.add(i, new String(Arrays.copyOfRange(data, (i * 24) + 1, (i * 24) + 25)));
+                    players.add(i, (new String(Arrays.copyOfRange(data, (i * 24) + 1, (i * 24) + 25)).trim()));
                 }
                 return new ListPlayersPacket(players);
             default:

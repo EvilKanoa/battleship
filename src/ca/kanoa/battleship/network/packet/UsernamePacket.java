@@ -7,7 +7,7 @@ public class UsernamePacket extends Packet {
     private String username;
 
     public UsernamePacket(String username) {
-        this.username = username;
+        this.username = username.trim();
     }
 
     @Override

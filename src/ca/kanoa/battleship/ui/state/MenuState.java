@@ -57,9 +57,11 @@ public class MenuState extends BasicGameState implements ButtonListener {
     @Override
     public void buttonPressed(String button, int mouseX, int mouseY) {
         if (button.equals("connect")) {
-            String username = JOptionPane.showInputDialog("Please enter a username");
+            String username = JOptionPane.showInputDialog("Please enter a username (16 characters max)");
             if (username == null || username.length() == 0) {
                 return;
+            } else if (username.length() > 16) {
+                username = username.substring(0, 16);
             }
             battleship.setNetwork(new BaseClient(Config.GLOBAL_SERVER));
             if (battleship.getNetwork().connect(username)) {
