@@ -5,15 +5,14 @@ import ca.kanoa.battleship.Config;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class BaseServer {
 
     private ServerSocket serverSocket;
     private Set<ClientHandler> clients;
+    private List<GameRequest> requests;
+    private List<NetworkGame> games;
 
     public BaseServer() throws IOException {
         console("Starting server...");
@@ -21,12 +20,19 @@ public class BaseServer {
         serverSocket = new ServerSocket(Config.NETWORK_PORT);
         console("Network started");
         clients = new HashSet<ClientHandler>();
+        requests = Collections.synchronizedList(new LinkedList<GameRequest>());
+        games = Collections.synchronizedList(new ArrayList<NetworkGame>());
     }
 
     public void loop() throws IOException {
         console("Server started");
         while(true) {
             update();
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -40,14 +46,69 @@ public class BaseServer {
         for (ClientHandler client : clients) {
             console("\t" + client.getUsername());
         }
+
+        // clean requests
+        List<String> online = getPlayers();
+        GameRequest request;
+        for (Iterator<GameRequest> iterator = requests.iterator(); iterator.hasNext();) {
+            request = iterator.next();
+            if (!online.contains(request.getChallenger()) || !online.contains(request.getOpponent())) {
+                iterator.remove();
+            }
+        }
     }
 
-    public List<String> getPlayers() {
+    public synchronized void startGame(ClientHandler playerOne, ClientHandler playerTwo) {
+        if (playerActive(playerOne) || playerActive(playerTwo) || !playerOne.online() || !playerTwo.online()) {
+            return;
+        }
+
+        NetworkGame newGame = new NetworkGame(playerOne, playerTwo);
+        games.add(newGame);
+        newGame.startGame();
+    }
+
+    public synchronized List<String> getPlayers() {
         List<String> players = new LinkedList<String>();
         for (ClientHandler client : clients) {
             players.add(client.getUsername());
         }
         return players;
+    }
+
+    public synchronized Set<ClientHandler> getClients() {
+        return clients;
+    }
+
+    public synchronized boolean playerActive(ClientHandler player) {
+        for (NetworkGame game : games) {
+            if (game.playerParticipating(player)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public synchronized NetworkGame getGame(ClientHandler player) {
+        for (NetworkGame game : games) {
+            if (game.playerParticipating(player)) {
+                return game;
+            }
+        }
+        return null;
+    }
+
+    public synchronized List<GameRequest> getGameRequests() {
+        return requests;
+    }
+
+    public synchronized ClientHandler getClient(String username) {
+        for (ClientHandler handler : clients) {
+            if (handler.getUsername().equalsIgnoreCase(username)) {
+                return handler;
+            }
+        }
+        return null;
     }
 
     public void console(String source, String message) {

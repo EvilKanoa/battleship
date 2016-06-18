@@ -1,10 +1,7 @@
 package ca.kanoa.battleship.network;
 
 import ca.kanoa.battleship.Config;
-import ca.kanoa.battleship.network.packet.KeepAlivePacket;
-import ca.kanoa.battleship.network.packet.ListPlayersPacket;
-import ca.kanoa.battleship.network.packet.Packet;
-import ca.kanoa.battleship.network.packet.UsernamePacket;
+import ca.kanoa.battleship.network.packet.*;
 import ca.kanoa.battleship.util.Timer;
 
 import java.io.IOException;
@@ -16,6 +13,7 @@ public class ClientHandler extends Thread {
     private BaseServer server;
     private Socket socket;
     private String username;
+
     private PacketHandler packetHandler;
     private boolean connected;
 
@@ -32,6 +30,11 @@ public class ClientHandler extends Thread {
     public void run() {
         while (connected) {
             loop();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -54,14 +57,44 @@ public class ClientHandler extends Thread {
                 case Config.PACKET_USERNAME_ID:
                     username = ((UsernamePacket) packet).getUsername();
                     server.console(this, "New username for me: " + username);
-                    break;
+                    return;
                 case Config.PACKET_LIST_PLAYERS:
                     List<String> players = server.getPlayers();
                     players.remove(username);
-                    packetHandler.sendPacket(new ListPlayersPacket(players));
-                    break;
+                    getPacketHandler().sendPacket(new ListPlayersPacket(players));
+                    return;
+                case Config.PACKET_GAME_REQUEST:
+                    String opponent = ((GameRequestPacket) packet).getRequestedOpponent();
+                    GameRequest myRequest = new GameRequest(getUsername(), opponent);
+                    server.console(this, "requested a game with " + opponent);
+
+                    if (server.getClient(opponent) == null || !server.getClient(opponent).online()) {
+                        server.console(this, "game request denied");
+                    }
+
+                    for (GameRequest request : server.getGameRequests()) {
+                        if (request.match(myRequest)) {
+                            server.console(this, "starting a game with " + opponent);
+                            server.getGameRequests().remove(request);
+                            server.startGame(this, server.getClient(opponent));
+                            return;
+                        }
+                    }
+                    if (!server.getGameRequests().contains(myRequest) && server.getClient(opponent) != null) {
+                        server.getGameRequests().add(myRequest);
+                        server.getClient(opponent).getPacketHandler().sendPacket(new GameRequestPacket(getUsername()));
+                    }
+                    return;
             }
         }
+    }
+
+    public synchronized boolean online() {
+        return server.getClients().contains(this);
+    }
+
+    public synchronized PacketHandler getPacketHandler() {
+        return packetHandler;
     }
 
     public Socket getSocket() {

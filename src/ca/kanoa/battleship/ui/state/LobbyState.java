@@ -86,6 +86,7 @@ public class LobbyState extends BasicGameState implements ButtonListener {
         refreshButton.update();
         for (RequestButton button : requestButtons) {
             button.update();
+            button.setRequested(battleship.getNetwork().getGameRequests().contains(button.getOpponent()));
         }
 
         if (updateTimer.check()) {
@@ -115,8 +116,12 @@ public class LobbyState extends BasicGameState implements ButtonListener {
             battleship.getNetwork().refreshPlayers();
         } else if (button.startsWith("request:")) {
             String opponent = button.substring(8);
-            // TODO: 2016-06-18 Send a game request packet
-            JOptionPane.showMessageDialog(null, "A game request has been sent to " + opponent);
+            battleship.getNetwork().requestGame(opponent);
+            if (battleship.getNetwork().getGameRequests().contains(opponent)) {
+                JOptionPane.showMessageDialog(null, "Starting a game with " + opponent + "...");
+            } else {
+                JOptionPane.showMessageDialog(null, "A game request has been sent to " + opponent);
+            }
         }
     }
 }

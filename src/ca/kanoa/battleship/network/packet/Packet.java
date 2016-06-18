@@ -25,6 +25,9 @@ public abstract class Packet {
                     players.add(i, (new String(Arrays.copyOfRange(data, (i * 24) + 1, (i * 24) + 25)).trim()));
                 }
                 return new ListPlayersPacket(players);
+            case Config.PACKET_GAME_REQUEST:
+                String opponent = new String(Arrays.copyOfRange(data, 1, data.length));
+                return new GameRequestPacket(opponent);
             default:
                 return null;
         }

@@ -1,6 +1,7 @@
 package ca.kanoa.battleship.network;
 
 import ca.kanoa.battleship.Config;
+import ca.kanoa.battleship.network.packet.GameRequestPacket;
 import ca.kanoa.battleship.network.packet.ListPlayersPacket;
 import ca.kanoa.battleship.network.packet.Packet;
 import ca.kanoa.battleship.network.packet.UsernamePacket;
@@ -10,6 +11,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,10 +24,12 @@ public class BaseClient extends Thread {
     private String username;
 
     private List<String> onlinePlayers;
+    private List<String> requests;
 
     public BaseClient(String serverAddress) {
         this.serverAddress = serverAddress;
         this.onlinePlayers = new ArrayList<String>();
+        this.requests = new LinkedList<String>();
     }
 
     public boolean connect(String username) {
@@ -46,7 +50,7 @@ public class BaseClient extends Thread {
     private void update() {
         packetHandler.update();
 
-        // check if the server  is still connected
+        // check if the server is still connected
         if (!packetHandler.connected()) {
             JOptionPane.showMessageDialog (null, "The server has disconnected", "Server Error",
                     JOptionPane.ERROR_MESSAGE);
@@ -62,6 +66,17 @@ public class BaseClient extends Thread {
                 case Config.PACKET_LIST_PLAYERS:
                     onlinePlayers = ((ListPlayersPacket) packet).getPlayers();
                     break;
+                case Config.PACKET_GAME_REQUEST:
+                    String opponent = ((GameRequestPacket) packet).getRequestedOpponent();
+                    requests.add(opponent);
+                    break;
+            }
+        }
+
+        // remove offline requests
+        for (Iterator<String> iterator = requests.iterator(); iterator.hasNext();) {
+            if (!onlinePlayers.contains(iterator.next())) {
+                iterator.remove();
             }
         }
     }
@@ -70,6 +85,11 @@ public class BaseClient extends Thread {
     public void run() {
         while (connected) {
             update();
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -77,8 +97,16 @@ public class BaseClient extends Thread {
         return onlinePlayers;
     }
 
+    public List<String> getGameRequests() {
+        return requests;
+    }
+
     public void refreshPlayers() {
         packetHandler.sendPacket(new ListPlayersPacket());
+    }
+
+    public void requestGame(String opponent) {
+        packetHandler.sendPacket(new GameRequestPacket(opponent));
     }
 
     public String getUsername() {

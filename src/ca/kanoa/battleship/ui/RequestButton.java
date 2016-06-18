@@ -26,6 +26,10 @@ public class RequestButton extends Button {
         text.drawString(x - text.getWidth(opponent) - 5, y + 7, opponent, requested ? Color.blue : Color.red);
     }
 
+    public String getOpponent() {
+        return opponent;
+    }
+
     public void setRequested(boolean requested) {
         this.requested = requested;
     }
