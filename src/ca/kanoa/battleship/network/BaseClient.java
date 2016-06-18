@@ -13,8 +13,8 @@ public class BaseClient extends Thread {
     private String serverAddress;
     private Socket socket;
     private PacketHandler packetHandler;
-    private Timer timer;
     private boolean connected = false;
+    private String username;
 
     public BaseClient(String serverAddress) {
         this.serverAddress = serverAddress;
@@ -25,7 +25,7 @@ public class BaseClient extends Thread {
             socket = new Socket(serverAddress, Config.NETWORK_PORT);
             packetHandler = new PacketHandler(socket, Config.NETWORK_TIMEOUT);
             packetHandler.sendPacket(new UsernamePacket(username));
-            timer = new Timer(Config.NETWORK_TIMEOUT);
+            this.username = username;
             this.connected = true;
             super.start();
             return true;
@@ -53,5 +53,9 @@ public class BaseClient extends Thread {
         while (connected) {
             update();
         }
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
