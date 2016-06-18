@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class BaseServer {
@@ -38,6 +40,14 @@ public class BaseServer {
         for (ClientHandler client : clients) {
             console("\t" + client.getUsername());
         }
+    }
+
+    public List<String> getPlayers() {
+        List<String> players = new LinkedList<String>();
+        for (ClientHandler client : clients) {
+            players.add(client.getUsername());
+        }
+        return players;
     }
 
     public void console(String source, String message) {

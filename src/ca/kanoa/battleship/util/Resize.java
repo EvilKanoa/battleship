@@ -4,13 +4,13 @@ import ca.kanoa.battleship.Config;
 
 public class Resize {
 
-    public static float locationX(float x) {
+    public static float width(float x) {
         double multi = Config.WINDOW_WIDTH / 1024d;
         return (float) (x * multi);
     }
 
-    public static float locationY(float y) {
-        double multi = Config.WINDOW_HEIGHT / 1024d;
+    public static float height(float y) {
+        double multi = Config.WINDOW_HEIGHT / 768d;
         return (float) (y * multi);
     }
 

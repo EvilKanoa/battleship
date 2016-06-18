@@ -10,15 +10,16 @@ import java.util.Set;
 public class Button {
 
     private Set<ButtonListener> listeners;
-    private final String id;
+    private String id;
     private Image main, hover;
     private Sound sound;
-    int x, y, width, height;
+    float x, y, width, height;
     private boolean mouseOver;
     private boolean enable;
     private boolean wasPressed;
+    private boolean resize;
 
-    public Button(String buttonID, Image main, Image hover, int x, int y, int width, int height) {
+    public Button(String buttonID, Image main, Image hover, float x, float y, float width, float height, Sound sound) {
         this.id = buttonID;
         this.main = main;
         this.hover = hover;
@@ -29,13 +30,24 @@ public class Button {
         this.mouseOver = false;
         this.wasPressed = false;
         this.listeners = new HashSet<ButtonListener>();
-        this.sound = null;
+        this.sound = sound;
+        this.resize = true;
         enable();
     }
 
-    public Button(String buttonID, Image main, Image hover, int x, int y, int width, int height, Sound sound) {
-        this(buttonID, main, hover, x, y, width, height);
-        this.sound = sound;
+    public Button(String buttonID, Image main, Image hover, float x, float y) {
+        this(buttonID, main, hover, x, y, null);
+        this.resize = false;
+    }
+
+    public Button(String buttonID, Image main, Image hover, float x, float y, Sound sound) {
+        this(buttonID, main, hover, x, y, main.getWidth(), main.getHeight(), sound);
+        this.resize = false;
+    }
+
+    public Button(String buttonID, Image main, Image hover, float x, float y, float width, float height) {
+        this(buttonID, main, hover, x, y, width, height, null);
+        this.resize = true;
     }
 
     public void enable() {
@@ -52,9 +64,9 @@ public class Button {
 
     public void render() {
         if (enable && mouseOver) {
-            hover.draw(x, y, width, height);
+            hover.draw(x, y, resize ? width : hover.getWidth(), resize ? height : hover.getHeight());
         } else if (enable) {
-            main.draw(x, y, width, height);
+            main.draw(x, y, resize ? width : main.getWidth(), resize ? height : main.getHeight());
         }
     }
 
