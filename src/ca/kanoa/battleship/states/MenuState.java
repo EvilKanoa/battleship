@@ -2,6 +2,7 @@ package ca.kanoa.battleship.states;
 
 import ca.kanoa.battleship.Battleship;
 import ca.kanoa.battleship.Config;
+import ca.kanoa.battleship.game.Marker;
 import ca.kanoa.battleship.game.Ship;
 import ca.kanoa.battleship.game.ShipType;
 import ca.kanoa.battleship.input.Button;

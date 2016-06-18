@@ -18,6 +18,6 @@ public class Marker extends Entity {
 
     @Override
     public void draw(int x, int y) {
-
+        image.draw(x, y);
     }
 }
