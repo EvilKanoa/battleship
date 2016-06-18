@@ -1,4 +1,4 @@
-package ca.kanoa.battleship.states;
+package ca.kanoa.battleship.ui.state;
 
 import ca.kanoa.battleship.Battleship;
 import ca.kanoa.battleship.Config;
@@ -8,9 +8,6 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-/**
- * Created by kanoa on 2016-06-09.
- */
 public class GameState extends BasicGameState {
 
     private Battleship battleship;

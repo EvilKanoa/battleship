@@ -1,10 +1,7 @@
 package ca.kanoa.battleship;
 
 import ca.kanoa.battleship.network.BaseClient;
-import ca.kanoa.battleship.states.GameState;
-import ca.kanoa.battleship.states.LobbyState;
-import ca.kanoa.battleship.states.MenuState;
-import ca.kanoa.battleship.states.SplashState;
+import ca.kanoa.battleship.ui.state.*;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;

@@ -2,12 +2,14 @@ package ca.kanoa.battleship.network;
 
 import ca.kanoa.battleship.Config;
 import ca.kanoa.battleship.network.packet.KeepAlivePacket;
+import ca.kanoa.battleship.network.packet.ListPlayersPacket;
 import ca.kanoa.battleship.network.packet.Packet;
 import ca.kanoa.battleship.network.packet.UsernamePacket;
 import ca.kanoa.battleship.util.Timer;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 
 public class ClientHandler extends Thread {
 
@@ -52,6 +54,12 @@ public class ClientHandler extends Thread {
                 case Config.PACKET_USERNAME_ID:
                     username = ((UsernamePacket) packet).getUsername();
                     server.console(this, "New username for me: " + username);
+                    break;
+                case Config.PACKET_LIST_PLAYERS:
+                    server.console(this, "list players");
+                    List<String> players = server.getPlayers();
+                    players.remove(username);
+                    packetHandler.sendPacket(new ListPlayersPacket(players));
                     break;
             }
         }

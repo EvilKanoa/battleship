@@ -1,10 +1,7 @@
-package ca.kanoa.battleship.states;
+package ca.kanoa.battleship.ui.state;
 
 import ca.kanoa.battleship.Battleship;
 import ca.kanoa.battleship.Config;
-import ca.kanoa.battleship.game.Marker;
-import ca.kanoa.battleship.game.Ship;
-import ca.kanoa.battleship.game.ShipType;
 import ca.kanoa.battleship.input.Button;
 import ca.kanoa.battleship.input.ButtonListener;
 import ca.kanoa.battleship.network.BaseClient;

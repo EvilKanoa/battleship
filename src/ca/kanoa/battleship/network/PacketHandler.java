@@ -79,7 +79,7 @@ public class PacketHandler {
      * Fetches all currently available packets. Can only be called once for each set of packets.
      * @return All available packets in an array
      */
-    public Packet[] getAvailablePackets() {
+    public synchronized Packet[] getAvailablePackets() {
         Packet[] newPackets = incomingPackets.toArray(new Packet[0]);
         incomingPackets.clear();
         return newPackets;
@@ -89,7 +89,7 @@ public class PacketHandler {
      * Fetches the oldest packet on the stack and removes it
      * @return A single packet from the bottom of the stack
      */
-    public Packet get() {
+    public synchronized Packet get() {
         Packet latest = incomingPackets.get(0);
         incomingPackets.remove(0);
         return latest;
@@ -99,7 +99,7 @@ public class PacketHandler {
      * Checks how many packets are currently available
      * @return The number of available packets
      */
-    public int available() {
+    public synchronized int available() {
         return incomingPackets.size();
     }
 
@@ -107,7 +107,7 @@ public class PacketHandler {
      * Checks if the current client is still connected
      * @return Whether the client is connected or not
      */
-    public boolean connected() {
+    public synchronized boolean connected() {
         return connected;
     }
 
@@ -117,7 +117,7 @@ public class PacketHandler {
      * Make sure the packet's first byte is its length. This can be accomplished with Packet#package(byte[])
      * @param packet The packet to be sent
      */
-    public void sendPacket(Packet packet) {
+    public synchronized void sendPacket(Packet packet) {
         this.packetQueue.add(packet);
     }
 

@@ -1,4 +1,4 @@
-package ca.kanoa.battleship.states;
+package ca.kanoa.battleship.ui.state;
 
 import ca.kanoa.battleship.Battleship;
 import ca.kanoa.battleship.Config;
@@ -38,14 +38,14 @@ public class LobbyState extends BasicGameState implements ButtonListener {
         usernameText = new TrueTypeFont(new Font("TimesRoman", Font.BOLD, 12), true);
         buttonSound = new Sound("aud/click.wav");
         exitButton = new Button("exit", new Image("img/button/exit.tga"),
-                new Image("img/button/exit_hover.tga"), (int) Resize.locationX(920), 8, 64, 32, buttonSound);
+                new Image("img/button/exit_hover.tga"), (int) Resize.width(920), 8, 64, 32, buttonSound);
         exitButton.addListener(this);
     }
 
     @Override
     public void render(GameContainer gameContainer, StateBasedGame stateBasedGame, Graphics graphics) throws SlickException {
         background.draw(0, 0, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
-        usernameText.drawString(Resize.locationX(78), 0, username, Color.gray);
+        usernameText.drawString(Resize.width(78), 0, username, Color.gray);
         exitButton.render();
     }
 

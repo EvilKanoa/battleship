@@ -25,5 +25,6 @@ public class Config {
     // packet IDs
     public static final byte PACKET_KEEP_ALIVE_ID = 0x00;
     public static final byte PACKET_USERNAME_ID = 0x01;
+    public static final byte PACKET_LIST_PLAYERS = 0x02;
 
 }

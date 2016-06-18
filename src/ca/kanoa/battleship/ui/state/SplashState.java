@@ -1,4 +1,4 @@
-package ca.kanoa.battleship.states;
+package ca.kanoa.battleship.ui.state;
 
 import ca.kanoa.battleship.Battleship;
 import ca.kanoa.battleship.Config;
