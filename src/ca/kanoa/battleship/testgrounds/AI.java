@@ -1,34 +1,26 @@
 package ca.kanoa.battleship.testgrounds;
 
 
-public class Main {
-
-    public static void main(String[] args) {
-        System.out.println("Hello battleship!");
-    }
+public class AI {
 
     public static void enemyshoot(int remainingShips, String [] carrier, String [] battleship, String [] cruiser, String [] sub, String [] ptCruiser, Boolean miss, Boolean win, Boolean hit){
 
         if (win == false){
 
-            if (miss == false){
+            if (hit == false){
 
-                if (hit == false){
+                hit = enemyshoot(hit);
 
-                    hit = enemyshoot(hit);
+                if (hit == true){
+                    win = check(carrier,battleship,cruiser,sub,ptCruiser);
+                }
 
-                    if (hit == true){
-                        win = check(carrier,battleship,cruiser,sub,ptCruiser);
-                    }
+            } else if (hit == true){
 
-                } else if (hit == true){
+                hit = enemyhit(hit);
 
-                    hit = enemyhit(hit);
-
-                    if (hit == true){
-                        win = check(carrier,battleship,cruiser,sub,ptCruiser);
-                    }
-
+                if (hit == true){
+                    win = check(carrier,battleship,cruiser,sub,ptCruiser);
                 }
 
             }
