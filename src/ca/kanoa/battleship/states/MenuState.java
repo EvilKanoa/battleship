@@ -2,6 +2,8 @@ package ca.kanoa.battleship.states;
 
 import ca.kanoa.battleship.Battleship;
 import ca.kanoa.battleship.Config;
+import ca.kanoa.battleship.game.Ship;
+import ca.kanoa.battleship.game.ShipType;
 import ca.kanoa.battleship.input.Button;
 import ca.kanoa.battleship.input.ButtonListener;
 import ca.kanoa.battleship.network.BaseClient;
@@ -10,7 +12,6 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import javax.swing.*;
-import java.io.IOException;
 
 public class MenuState extends BasicGameState implements ButtonListener {
 
@@ -19,11 +20,9 @@ public class MenuState extends BasicGameState implements ButtonListener {
     private Button exitButton;
     private Image background;
     private Sound buttonSound;
-    private boolean connecting;
 
     public MenuState(Battleship battleship) {
         this.battleship = battleship;
-        this.connecting = false;
     }
 
     @Override
@@ -70,7 +69,6 @@ public class MenuState extends BasicGameState implements ButtonListener {
             } else {
                 JOptionPane.showMessageDialog(null, "Unable to connect...");
             }
-            // TODO: Connect to lobby
         } else if (button.equals("exit")) {
             System.exit(0);
         }

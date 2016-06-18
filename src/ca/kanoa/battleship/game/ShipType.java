@@ -2,7 +2,7 @@ package ca.kanoa.battleship.game;
 
 public enum ShipType {
 
-    AIRCRAFT_CARRIER("Aircraft Carrier", 5),
+    CARRIER("Carrier", 5),
     BATTLESHIP("Battleship", 4),
     SUBMARINE("Submarine", 3),
     CRUISER("Cruiser", 3),

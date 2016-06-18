@@ -13,9 +13,15 @@ public abstract class Entity {
     private int width;
     private int height;
 
-    protected Entity(int x, int y) {
+    protected Entity(int x, int y, int width, int height) {
         this.posX = x;
         this.posY = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    protected Entity(int x, int y) {
+        this(x, y, 1, 1);
     }
 
     public int getX() {
@@ -36,6 +42,6 @@ public abstract class Entity {
         return x >= posX && x <= posX + width && y >= posY && y <= posY + height;
     }
 
-    public abstract Image getImage();
+    public abstract void draw(int x, int y);
 
 }
