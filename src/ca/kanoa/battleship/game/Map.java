@@ -10,15 +10,18 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Map implements ButtonListener {
+public class Map {
 
     private List<Entity>[][] cells;
     private CellButton[][] cellButtons;
     private Image grid;
     private Image cellButton;
     private boolean active;
+    private String mapId;
 
-    public Map() throws SlickException {
+    public Map(String mapId, ButtonListener buttonListener) throws SlickException {
+        this.mapId = mapId;
+
         grid = new Image("img/grid.tga");
         cellButton = new Image("img/button/cell_hover.tga");
 
@@ -28,9 +31,11 @@ public class Map implements ButtonListener {
             for (int j = 0; j < Config.MAP_SIZE; j++) {
                 cells[i][j] = new ArrayList<Entity>();
 
-                CellButton button = new CellButton(cellButton, i, j);
-                button.addListener(this);
+                CellButton button = new CellButton(mapId, cellButton, i, j);
                 cellButtons[i][j] = button;
+                if (buttonListener != null) {
+                    button.addListener(buttonListener);
+                }
             }
         }
         this.active = true;
@@ -94,6 +99,10 @@ public class Map implements ButtonListener {
             }
         }
         return null;
+    }
+
+    public String getId() {
+        return mapId;
     }
 
     public List<Entity> check(int x, int y) {
@@ -183,14 +192,5 @@ public class Map implements ButtonListener {
         entities.clear();
         entities.addAll(ships);
         entities.addAll(markers);
-    }
-
-    @Override
-    public void buttonPressed(String button, int mouseX, int mouseY) {
-        if (button.startsWith("cell:") && this.active) {
-            int x = Integer.parseInt(button.substring(5).split(",")[0]);
-            int y = Integer.parseInt(button.substring(5).split(",")[1]);
-            hit(x, y);
-        }
     }
 }

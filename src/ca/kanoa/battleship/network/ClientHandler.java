@@ -85,6 +85,8 @@ public class ClientHandler extends Thread {
                         server.getClient(opponent).getPacketHandler().sendPacket(new GameRequestPacket(getUsername()));
                     }
                     return;
+                case Config.PACKET_READY_ID:
+                    getActiveGame().readyUp();
             }
         }
     }

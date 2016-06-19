@@ -76,6 +76,12 @@ public class BaseClient extends Thread {
                     battleship.gameState.setOpponent(opponent);
                     battleship.enterState(Config.SCREEN_GAME);
                     break;
+                case Config.PACKET_PLAYER_ONE_ID:
+                    battleship.gameState.getGame().setMyPlayer(1);
+                    break;
+                case Config.PACKET_PLAYER_TWO_ID:
+                    battleship.gameState.getGame().setMyPlayer(2);
+                    break;
             }
         }
 
@@ -117,5 +123,9 @@ public class BaseClient extends Thread {
 
     public String getUsername() {
         return username;
+    }
+
+    public void readyUp() {
+        packetHandler.sendPacket(new ReadyPacket());
     }
 }

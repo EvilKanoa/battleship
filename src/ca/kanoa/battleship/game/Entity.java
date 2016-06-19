@@ -76,4 +76,6 @@ public abstract class Entity {
 
     public abstract void draw(float x, float y);
 
+    public abstract void init();
+
 }

@@ -1,6 +1,8 @@
 package ca.kanoa.battleship.network.packet;
 
 import ca.kanoa.battleship.Config;
+import ca.kanoa.battleship.game.Ship;
+import ca.kanoa.battleship.game.ShipType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +34,16 @@ public abstract class Packet {
                 return new StartGamePacket(opponent);
             case Config.PACKET_READY_ID:
                 return new ReadyPacket();
+            case Config.PACKET_PLAYER_ONE_ID:
+                return new PlayerOnePacket();
+            case Config.PACKET_PLAYER_TWO_ID:
+                return new PlayerTwoPacket();
+            case Config.PACKET_SHIP_SUNK_ID:
+                ShipType type = ShipType.getShipType(data[1]);
+                int x = data[2];
+                int y = data[3];
+                boolean vertical = data[4] == 1;
+                return new ShipSunkPacket(new Ship(type, x, y, vertical, false));
             default:
                 return null;
         }

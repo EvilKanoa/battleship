@@ -6,13 +6,14 @@ import ca.kanoa.battleship.game.Game;
 import ca.kanoa.battleship.game.GameStatus;
 import ca.kanoa.battleship.game.Ship;
 import ca.kanoa.battleship.game.ShipType;
+import ca.kanoa.battleship.input.ButtonListener;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-public class GameState extends BasicGameState {
+public class GameState extends BasicGameState implements ButtonListener {
 
     private Battleship battleship;
     private String opponent;
@@ -35,13 +36,13 @@ public class GameState extends BasicGameState {
 
     @Override
     public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
-        game = new Game();
+        game = new Game(this);
         background = new Image("img/gameback.tga");
         nextShip = ShipType.getShipType(1);
-        imageShip = new Ship(nextShip, 0, 0, false);
         backgroundMusic = new Music("aud/background.ogg");
         reject = new Sound("aud/reject.wav");
         mouseDown = false;
+        imageShip = new Ship(nextShip, 0, 0, false);
     }
 
     @Override
@@ -56,8 +57,14 @@ public class GameState extends BasicGameState {
                 imageShip.draw(Mouse.getX() - 20, Config.WINDOW_HEIGHT - Mouse.getY() - 20);
                 break;
             case PLAYER_ONE_TURN:
-                break;
             case PLAYER_TWO_TURN:
+                if (game.myTurn()) {
+                    drawCenterString(graphics, "Choose your target!", 10);
+                } else if (game.getMyPlayer() == -1) {
+                    drawCenterString(graphics, "Waiting on " + opponent + "...", Config.WINDOW_HEIGHT - 30);
+                } else {
+                    drawCenterString(graphics, opponent + " is choosing their target!", Config.WINDOW_HEIGHT - 30);
+                }
                 break;
             case GAME_OVER:
                 break;
@@ -88,6 +95,7 @@ public class GameState extends BasicGameState {
                         game.getMyMap().place(imageShip);
                         nextShip = ShipType.getShipType(nextShip.getShipID() + 1);
                         if (nextShip == null) {
+                            battleship.getNetwork().readyUp();
                             game.setStatus(GameStatus.PLAYER_ONE_TURN);
                         } else {
                             imageShip = new Ship(nextShip, 0, 0, false);
@@ -101,8 +109,8 @@ public class GameState extends BasicGameState {
                 }
                 break;
             case PLAYER_ONE_TURN:
-                break;
             case PLAYER_TWO_TURN:
+                game.setMiddle(game.myTurn() ? Config.WINDOW_HEIGHT / 2 + 210 : Config.WINDOW_HEIGHT / 2 - 210);
                 break;
             case GAME_OVER:
                 break;
@@ -119,5 +127,19 @@ public class GameState extends BasicGameState {
 
     public void setOpponent(String opponent) {
         this.opponent = opponent;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    @Override
+    public void buttonPressed(String button, int mouseX, int mouseY) {
+        if (button.startsWith("theirmap:cell:")) {
+            int x = Integer.parseInt(button.substring(14).split(",")[0]);
+            int y = Integer.parseInt(button.substring(14).split(",")[1]);
+            // TODO: Attack
+            System.out.println("Attacked: " + button.substring(14));
+        }
     }
 }

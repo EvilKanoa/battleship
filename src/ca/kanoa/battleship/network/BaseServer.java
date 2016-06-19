@@ -75,7 +75,7 @@ public class BaseServer {
 
         NetworkGame newGame = null;
         try {
-            newGame = new NetworkGame(playerOne, playerTwo);
+            newGame = new NetworkGame(playerOne, playerTwo, this);
             playerOne.setActiveGame(newGame);
             playerTwo.setActiveGame(newGame);
             games.add(newGame);
@@ -133,6 +133,10 @@ public class BaseServer {
 
     public void console(ClientHandler source, String message) {
         console(source.getUsername(), message);
+    }
+
+    public void console(NetworkGame source, String message) {
+        console(source.toString(), message);
     }
 
     protected void removeClient(ClientHandler client) {

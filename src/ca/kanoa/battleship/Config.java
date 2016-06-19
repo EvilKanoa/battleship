@@ -32,5 +32,8 @@ public class Config {
     public static final byte PACKET_GAME_REQUEST_ID     = 0x03;
     public static final byte PACKET_START_GAME_ID       = 0x04;
     public static final byte PACKET_READY_ID            = 0x05;
+    public static final byte PACKET_PLAYER_ONE_ID       = 0x06;
+    public static final byte PACKET_PLAYER_TWO_ID       = 0x07;
+    public static final byte PACKET_SHIP_SUNK_ID        = 0x08;
 
 }
