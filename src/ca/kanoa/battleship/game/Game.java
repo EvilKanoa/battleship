@@ -15,7 +15,12 @@ public class Game {
         middle = Config.WINDOW_HEIGHT / 2;
         myMap = new Map();
         theirMap = new Map();
+        myMap.setActive(false);
         theirMap.setActive(false);
+    }
+
+    public void setStatus(GameStatus status) {
+        this.status = status;
     }
 
     public Map getMyMap() {

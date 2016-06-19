@@ -27,6 +27,14 @@ public abstract class Entity {
         this(x, y, 1, 1);
     }
 
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
     public int getX() {
         return posX;
     }
@@ -50,13 +58,16 @@ public abstract class Entity {
      * @return Whether the location collides with this entity
      */
     public boolean collision(int x, int y) {
-        return x >= posX && x < posX + width && y >= posY && y < posY + height;
+        boolean xCollision = (x >= posX) && (x < posX + width);
+        boolean yCollision = (y >= posY) && (y < posY + height);
+        boolean collision = xCollision && yCollision;
+        return collision;
     }
 
     public List<Integer[]> getOccupiedSpaces() {
         List<Integer[]> spaces = new LinkedList<Integer[]>();
-        for (int x = posX; x <= posX + width; x++) {
-            for (int y = posY; y <= posY + height; y++) {
+        for (int x = posX; x < posX + width; x++) {
+            for (int y = posY; y < posY + height; y++) {
                 spaces.add(new Integer[]{x, y});
             }
         }

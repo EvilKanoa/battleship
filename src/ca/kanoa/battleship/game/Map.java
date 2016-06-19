@@ -140,6 +140,25 @@ public class Map implements ButtonListener {
         return hits;
     }
 
+    public int getCursorX() {
+        return getCursor()[0];
+    }
+
+    public int getCursorY() {
+        return getCursor()[1];
+    }
+
+    public int[] getCursor() {
+        for (int x = 0; x < Config.MAP_SIZE; x++) {
+            for (int y = 0; y < Config.MAP_SIZE; y++) {
+                if (cellButtons[x][y].selected()) {
+                    return new int[]{x, y};
+                }
+            }
+        }
+        return new int[]{-1, -1};
+    }
+
     public List<Entity> getEntities() {
         List<Entity> entities = new LinkedList<Entity>();
         for (List<Entity>[] column : cells) {

@@ -1,16 +1,14 @@
 package ca.kanoa.battleship.network;
 
-import ca.kanoa.battleship.game.Game;
 import ca.kanoa.battleship.network.packet.StartGamePacket;
 import org.newdawn.slick.SlickException;
 
-public class NetworkGame extends Game {
+public class NetworkGame {
 
     private ClientHandler playerOne;
     private ClientHandler playerTwo;
 
     public NetworkGame(ClientHandler playerOne, ClientHandler playerTwo) throws SlickException {
-        super();
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
     }

@@ -27,12 +27,20 @@ public class Ship extends Entity {
             image.setRotation(90);
             image.draw(x + image.getHeight(), y);
         } else {
+            image.setCenterOfRotation(0, 0);
+            image.setRotation(0);
             image.draw(x, y);
         }
     }
 
+    public ShipType getType() {
+        return type;
+    }
+
     public void setVertical(boolean vertical) {
         this.vertical = vertical;
+        setWidth(vertical ? 1 : type.getShipLength());
+        setHeight(vertical ? type.getShipLength() : 1);
     }
 
 }

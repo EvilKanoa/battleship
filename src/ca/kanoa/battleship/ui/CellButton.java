@@ -37,4 +37,8 @@ public class CellButton extends Button {
         }
     }
 
+    public boolean selected() {
+        return mouseOver;
+    }
+
 }
