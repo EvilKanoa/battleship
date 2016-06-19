@@ -17,8 +17,6 @@ public class Game {
         middle = Config.WINDOW_HEIGHT / 2;
         myMap = new Map("mymap", buttonListener);
         theirMap = new Map("theirmap", buttonListener);
-        myMap.setActive(false);
-        theirMap.setActive(false);
         myPlayer = -1;
     }
 

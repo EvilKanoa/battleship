@@ -16,7 +16,6 @@ public class Map {
     private CellButton[][] cellButtons;
     private Image grid;
     private Image cellButton;
-    private boolean active;
     private String mapId;
 
     public Map(String mapId, ButtonListener buttonListener) throws SlickException {
@@ -38,7 +37,6 @@ public class Map {
                 }
             }
         }
-        this.active = true;
     }
 
     public void update(float x, float y) {
@@ -113,14 +111,6 @@ public class Map {
             }
         }
         return hits;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public boolean validPlacement(Ship ship) {

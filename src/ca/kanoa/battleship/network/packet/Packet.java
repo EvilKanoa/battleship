@@ -44,6 +44,10 @@ public abstract class Packet {
                 int y = data[3];
                 boolean vertical = data[4] == 1;
                 return new ShipSunkPacket(new Ship(type, x, y, vertical, false));
+            case Config.PACKET_ATTACK:
+                return new AttackPacket(data[1], data[2]);
+            case Config.PACKET_RESULT:
+                return new ResultPacket(data[1], data[2], data[3] == 1);
             default:
                 return null;
         }

@@ -121,6 +121,10 @@ public class BaseClient extends Thread {
         packetHandler.sendPacket(new GameRequestPacket(opponent));
     }
 
+    public void attack(int x, int y) {
+        packetHandler.sendPacket(new AttackPacket(x, y));
+    }
+
     public String getUsername() {
         return username;
     }

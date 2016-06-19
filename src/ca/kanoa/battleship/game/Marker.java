@@ -11,6 +11,7 @@ public class Marker extends Entity {
     public Marker(boolean hit, int x, int y) {
         super(x, y);
         this.hit = hit;
+        init();
     }
 
     @Override

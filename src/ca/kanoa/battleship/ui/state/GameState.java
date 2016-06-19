@@ -7,6 +7,7 @@ import ca.kanoa.battleship.game.GameStatus;
 import ca.kanoa.battleship.game.Ship;
 import ca.kanoa.battleship.game.ShipType;
 import ca.kanoa.battleship.input.ButtonListener;
+import ca.kanoa.battleship.util.Timer;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.*;
@@ -24,9 +25,13 @@ public class GameState extends BasicGameState implements ButtonListener {
     private Sound reject;
     private Music backgroundMusic;
     private boolean mouseDown;
+    private boolean attacked;
+    private Timer buttonProtect;
 
     public GameState(Battleship battleship) {
         this.battleship = battleship;
+        this.attacked = false;
+        this.buttonProtect = new Timer(500);
     }
 
     @Override
@@ -59,7 +64,11 @@ public class GameState extends BasicGameState implements ButtonListener {
             case PLAYER_ONE_TURN:
             case PLAYER_TWO_TURN:
                 if (game.myTurn()) {
-                    drawCenterString(graphics, "Choose your target!", 10);
+                    if (attacked) {
+                        drawCenterString(graphics, "Firing!", 10);
+                    } else {
+                        drawCenterString(graphics, "Choose your target!", 10);
+                    }
                 } else if (game.getMyPlayer() == -1) {
                     drawCenterString(graphics, "Waiting on " + opponent + "...", Config.WINDOW_HEIGHT - 30);
                 } else {
@@ -135,11 +144,16 @@ public class GameState extends BasicGameState implements ButtonListener {
 
     @Override
     public void buttonPressed(String button, int mouseX, int mouseY) {
-        if (button.startsWith("theirmap:cell:")) {
-            int x = Integer.parseInt(button.substring(14).split(",")[0]);
-            int y = Integer.parseInt(button.substring(14).split(",")[1]);
-            // TODO: Attack
-            System.out.println("Attacked: " + button.substring(14));
+        if (buttonProtect.check()) {
+            if (button.startsWith("theirmap:cell:") && game.myTurn() && !attacked) {
+                int x = Integer.parseInt(button.substring(14).split(",")[0]);
+                int y = Integer.parseInt(button.substring(14).split(",")[1]);
+                if (game.getTheirMap().getMarker(x, y) == null) {
+                    battleship.getNetwork().attack(x, y);
+                    attacked = true;
+                }
+            }
         }
+        buttonProtect.reset();
     }
 }
