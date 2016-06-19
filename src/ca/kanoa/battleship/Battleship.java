@@ -12,6 +12,7 @@ public class Battleship extends StateBasedGame {
     public final LobbyState lobbyState;
     public final MenuState menuState;
     public final SplashState splashState;
+    public final GameoverState gameoverState;
     private BaseClient networkClient;
 
     public Battleship() {
@@ -21,6 +22,7 @@ public class Battleship extends StateBasedGame {
         lobbyState = new LobbyState(this);
         menuState = new MenuState(this);
         splashState = new SplashState(this);
+        gameoverState = new GameoverState();
     }
 
     @Override
@@ -29,6 +31,7 @@ public class Battleship extends StateBasedGame {
         this.addState(gameState);
         this.addState(lobbyState);
         this.addState(menuState);
+        this.addState(gameoverState);
     }
 
     public BaseClient getNetwork() {

@@ -53,9 +53,13 @@ public class NetworkGame {
         }
 
         if (howManySunk(playerOneShipsSunk) >= 5) {
-            server.console(this, "game won by " + playerTwo.getName());
+            server.console(this, "game won by " + playerTwo.getUsername());
+            playerOne.getPacketHandler().sendPacket(new GameWonPacket(2));
+            playerTwo.getPacketHandler().sendPacket(new GameWonPacket(2));
         } else if (howManySunk(playerTwoShipsSunk) >= 5) {
-            server.console(this, "game won by " + playerOne.getName());
+            server.console(this, "game won by " + playerOne.getUsername());
+            playerOne.getPacketHandler().sendPacket(new GameWonPacket(1));
+            playerTwo.getPacketHandler().sendPacket(new GameWonPacket(1));
         }
     }
 

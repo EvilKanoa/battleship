@@ -28,6 +28,7 @@ public class GameState extends BasicGameState implements ButtonListener {
     private Timer buttonProtect;
     private Timer switchTimer;
     private String status;
+    private int winner;
 
     public GameState(Battleship battleship) {
         this.battleship = battleship;
@@ -35,6 +36,7 @@ public class GameState extends BasicGameState implements ButtonListener {
         this.switching = false;
         this.buttonProtect = new Timer(500);
         this.switchTimer = new Timer(Config.GAME_SWITCH_VIEW_DELAY);
+        this.winner = -1;
     }
 
     @Override
@@ -135,12 +137,20 @@ public class GameState extends BasicGameState implements ButtonListener {
                 }
                 break;
             case GAME_OVER:
+                if (winner != -1) {
+                    battleship.gameoverState.setWon(winner == game.getMyPlayer());
+                    battleship.enterState(Config.SCREEN_GAMEOVER);
+                }
                 break;
         }
     }
 
     private void drawCenterString(Graphics g, String s, float height) {
         g.drawString(s, (Config.WINDOW_WIDTH / 2) - (g.getFont().getWidth(s) / 2), height);
+    }
+
+    public void setWinner(int winner) {
+        this.winner = winner;
     }
 
     public String getOpponent() {

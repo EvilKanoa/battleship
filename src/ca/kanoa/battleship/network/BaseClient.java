@@ -2,6 +2,7 @@ package ca.kanoa.battleship.network;
 
 import ca.kanoa.battleship.Battleship;
 import ca.kanoa.battleship.Config;
+import ca.kanoa.battleship.game.GameStatus;
 import ca.kanoa.battleship.game.Ship;
 import ca.kanoa.battleship.network.packet.*;
 import ca.kanoa.battleship.util.Timer;
@@ -106,6 +107,11 @@ public class BaseClient extends Thread {
                     activeAttack = null;
                     ResultPacket res = (ResultPacket) packet;
                     battleship.gameState.attackResult(res.getX(), res.getY(), res.isHit());
+                    break;
+                case Config.PACKET_GAME_WON:
+                    GameWonPacket winner = (GameWonPacket) packet;
+                    battleship.gameState.setWinner(winner.getWinner());
+                    battleship.gameState.getGame().setStatus(GameStatus.GAME_OVER);
                     break;
             }
         }

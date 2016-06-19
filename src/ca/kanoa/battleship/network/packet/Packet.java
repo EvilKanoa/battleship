@@ -48,6 +48,8 @@ public abstract class Packet {
                 return new AttackPacket(data[1], data[2]);
             case Config.PACKET_RESULT:
                 return new ResultPacket(data[1], data[2], data[3] == 1);
+            case Config.PACKET_GAME_WON:
+                return new GameWonPacket(data[1]);
             default:
                 return null;
         }

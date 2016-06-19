@@ -10,6 +10,7 @@ public class Config {
     public static final int SCREEN_MAINMENU             = 2;
     public static final int SCREEN_LOBBY                = 3;
     public static final int SCREEN_GAME                 = 4;
+    public static final int SCREEN_GAMEOVER             = 5;
 
     // misc game information
     public static final int MAP_SIZE                    = 10;
@@ -23,7 +24,7 @@ public class Config {
 
     // network information
     public static final int NETWORK_PORT                = 20001;
-    public static final String GLOBAL_SERVER            = "localhost";
+    public static final String GLOBAL_SERVER            = "192.168.0.104";
     public static final long NETWORK_TIMEOUT            = 5000;
 
     // packet IDs
@@ -38,5 +39,6 @@ public class Config {
     public static final byte PACKET_SHIP_SUNK_ID        = 0x08;
     public static final byte PACKET_ATTACK              = 0x09;
     public static final byte PACKET_RESULT              = 0x0A;
+    public static final byte PACKET_GAME_WON            = 0x0B;
 
 }
