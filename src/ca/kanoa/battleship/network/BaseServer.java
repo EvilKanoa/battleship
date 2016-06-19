@@ -1,6 +1,7 @@
 package ca.kanoa.battleship.network;
 
 import ca.kanoa.battleship.Config;
+import org.newdawn.slick.SlickException;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -72,9 +73,14 @@ public class BaseServer {
             return;
         }
 
-        NetworkGame newGame = new NetworkGame(playerOne, playerTwo);
-        games.add(newGame);
-        newGame.startGame();
+        NetworkGame newGame = null;
+        try {
+            newGame = new NetworkGame(playerOne, playerTwo);
+            games.add(newGame);
+            newGame.startGame();
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
     }
 
     public synchronized List<String> getPlayers() {

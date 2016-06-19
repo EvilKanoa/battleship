@@ -8,7 +8,7 @@ public class CellButton extends Button {
     int posX, posY;
 
     public CellButton(Image hover, int posX, int posY) {
-        super("cell:" + posX + "," + posY, null, hover, 0, 0, 40, 40);
+        super("cell:" + posX + "," + posY, null, hover, 0, 0, 39, 39);
         this.posX = posX;
         this.posY = posY;
     }

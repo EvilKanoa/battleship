@@ -16,6 +16,7 @@ public class Map implements ButtonListener {
     private CellButton[][] cellButtons;
     private Image grid;
     private Image cellButton;
+    private boolean active;
 
     public Map() throws SlickException {
         grid = new Image("img/grid.tga");
@@ -32,6 +33,7 @@ public class Map implements ButtonListener {
                 cellButtons[i][j] = button;
             }
         }
+        this.active = true;
     }
 
     public void update(float x, float y) {
@@ -104,6 +106,28 @@ public class Map implements ButtonListener {
         return hits;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean validPlacement(Ship ship) {
+        for (Integer[] coord : ship.getOccupiedSpaces()) {
+            if (coord[0] < 0 || coord[0] >= Config.MAP_SIZE || coord[1] < 0 || coord[1] >= Config.MAP_SIZE) {
+                return false;
+            }
+            for (Entity entity : getEntities()) {
+                if (entity.collision(coord[0], coord[1]) && entity instanceof Ship) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public List<Entity> checkCollisions(Entity entity) {
         List<Entity> hits = new LinkedList<Entity>();
         for (Integer[] cell : entity.getOccupiedSpaces()) {
@@ -144,7 +168,7 @@ public class Map implements ButtonListener {
 
     @Override
     public void buttonPressed(String button, int mouseX, int mouseY) {
-        if (button.startsWith("cell:")) {
+        if (button.startsWith("cell:") && this.active) {
             int x = Integer.parseInt(button.substring(5).split(",")[0]);
             int y = Integer.parseInt(button.substring(5).split(",")[1]);
             hit(x, y);
