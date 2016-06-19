@@ -63,7 +63,7 @@ public class MenuState extends BasicGameState implements ButtonListener {
             } else if (username.length() > 16) {
                 username = username.substring(0, 16);
             }
-            battleship.setNetwork(new BaseClient(Config.GLOBAL_SERVER));
+            battleship.setNetwork(new BaseClient(Config.GLOBAL_SERVER, battleship));
             if (battleship.getNetwork().connect(username)) {
                 battleship.enterState(Config.SCREEN_LOBBY);
             } else {

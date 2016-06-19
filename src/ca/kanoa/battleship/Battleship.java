@@ -8,10 +8,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class Battleship extends StateBasedGame {
 
-    protected final GameState gameState;
-    protected final LobbyState lobbyState;
-    protected final MenuState menuState;
-    protected final SplashState splashState;
+    public final GameState gameState;
+    public final LobbyState lobbyState;
+    public final MenuState menuState;
+    public final SplashState splashState;
     private BaseClient networkClient;
 
     public Battleship() {

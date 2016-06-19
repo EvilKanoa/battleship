@@ -27,5 +27,6 @@ public class Config {
     public static final byte PACKET_USERNAME_ID = 0x01;
     public static final byte PACKET_LIST_PLAYERS = 0x02;
     public static final byte PACKET_GAME_REQUEST = 0x03;
+    public static final byte PACKET_START_GAME = 0x04;
 
 }

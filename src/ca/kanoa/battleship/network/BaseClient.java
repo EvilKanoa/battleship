@@ -1,10 +1,8 @@
 package ca.kanoa.battleship.network;
 
+import ca.kanoa.battleship.Battleship;
 import ca.kanoa.battleship.Config;
-import ca.kanoa.battleship.network.packet.GameRequestPacket;
-import ca.kanoa.battleship.network.packet.ListPlayersPacket;
-import ca.kanoa.battleship.network.packet.Packet;
-import ca.kanoa.battleship.network.packet.UsernamePacket;
+import ca.kanoa.battleship.network.packet.*;
 import ca.kanoa.battleship.util.Timer;
 
 import javax.swing.*;
@@ -18,18 +16,21 @@ import java.util.List;
 public class BaseClient extends Thread {
 
     private String serverAddress;
+    private Battleship battleship;
     private Socket socket;
     private PacketHandler packetHandler;
     private boolean connected = false;
+    private boolean ingame = false;
     private String username;
 
     private List<String> onlinePlayers;
     private List<String> requests;
 
-    public BaseClient(String serverAddress) {
+    public BaseClient(String serverAddress, Battleship owner) {
         this.serverAddress = serverAddress;
         this.onlinePlayers = new ArrayList<String>();
         this.requests = new LinkedList<String>();
+        this.battleship = owner;
     }
 
     public boolean connect(String username) {
@@ -67,8 +68,14 @@ public class BaseClient extends Thread {
                     onlinePlayers = ((ListPlayersPacket) packet).getPlayers();
                     break;
                 case Config.PACKET_GAME_REQUEST:
-                    String opponent = ((GameRequestPacket) packet).getRequestedOpponent();
-                    requests.add(opponent);
+                    String requestedOpponent = ((GameRequestPacket) packet).getRequestedOpponent();
+                    requests.add(requestedOpponent);
+                    break;
+                case Config.PACKET_START_GAME:
+                    ingame = true;
+                    String opponent = ((StartGamePacket) packet).getOpponent();
+                    battleship.gameState.setOpponent(opponent);
+                    battleship.enterState(Config.SCREEN_GAME);
                     break;
             }
         }

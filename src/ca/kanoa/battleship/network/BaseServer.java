@@ -56,6 +56,15 @@ public class BaseServer {
                 iterator.remove();
             }
         }
+
+        // clean games
+        NetworkGame game;
+        for (Iterator<NetworkGame> iterator = games.iterator(); iterator.hasNext();) {
+            game = iterator.next();
+            if (!getClients().contains(game.getPlayerOne()) || !getClients().contains(game.getPlayerTwo())) {
+                iterator.remove();
+            }
+        }
     }
 
     public synchronized void startGame(ClientHandler playerOne, ClientHandler playerTwo) {

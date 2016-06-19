@@ -11,6 +11,7 @@ import org.newdawn.slick.state.StateBasedGame;
 public class GameState extends BasicGameState {
 
     private Battleship battleship;
+    private String opponent;
 
     public GameState(Battleship battleship) {
         this.battleship = battleship;
@@ -34,5 +35,13 @@ public class GameState extends BasicGameState {
     @Override
     public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int i) throws SlickException {
 
+    }
+
+    public String getOpponent() {
+        return opponent;
+    }
+
+    public void setOpponent(String opponent) {
+        this.opponent = opponent;
     }
 }

@@ -26,8 +26,11 @@ public abstract class Packet {
                 }
                 return new ListPlayersPacket(players);
             case Config.PACKET_GAME_REQUEST:
+                String requestedOpponent = new String(Arrays.copyOfRange(data, 1, data.length));
+                return new GameRequestPacket(requestedOpponent);
+            case Config.PACKET_START_GAME:
                 String opponent = new String(Arrays.copyOfRange(data, 1, data.length));
-                return new GameRequestPacket(opponent);
+                return new StartGamePacket(opponent);
             default:
                 return null;
         }

@@ -1,6 +1,7 @@
 package ca.kanoa.battleship.network;
 
 import ca.kanoa.battleship.game.Game;
+import ca.kanoa.battleship.network.packet.StartGamePacket;
 
 public class NetworkGame extends Game {
 
@@ -17,7 +18,19 @@ public class NetworkGame extends Game {
     }
 
     public void startGame() {
+        // send the game packets
+        playerOne.getPacketHandler().sendPacket(new StartGamePacket(playerTwo.getUsername()));
+        playerTwo.getPacketHandler().sendPacket(new StartGamePacket(playerOne.getUsername()));
 
+        // TODO: Finish starting the game...
+    }
+
+    public ClientHandler getPlayerOne() {
+        return playerOne;
+    }
+
+    public ClientHandler getPlayerTwo() {
+        return playerTwo;
     }
 
 }
