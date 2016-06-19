@@ -2,7 +2,6 @@ package ca.kanoa.battleship.network;
 
 import ca.kanoa.battleship.Config;
 import ca.kanoa.battleship.network.packet.*;
-import ca.kanoa.battleship.util.Timer;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -16,6 +15,7 @@ public class ClientHandler extends Thread {
 
     private PacketHandler packetHandler;
     private boolean connected;
+    private NetworkGame activeGame;
 
     public ClientHandler(Socket socket, BaseServer server) throws IOException {
         this.server = server;
@@ -58,12 +58,12 @@ public class ClientHandler extends Thread {
                     username = ((UsernamePacket) packet).getUsername();
                     server.console(this, "New username for me: " + username);
                     return;
-                case Config.PACKET_LIST_PLAYERS:
+                case Config.PACKET_LIST_PLAYERS_ID:
                     List<String> players = server.getPlayers();
                     players.remove(username);
                     getPacketHandler().sendPacket(new ListPlayersPacket(players));
                     return;
-                case Config.PACKET_GAME_REQUEST:
+                case Config.PACKET_GAME_REQUEST_ID:
                     String opponent = ((GameRequestPacket) packet).getRequestedOpponent();
                     GameRequest myRequest = new GameRequest(getUsername(), opponent);
                     server.console(this, "requested a game with " + opponent);
@@ -103,5 +103,13 @@ public class ClientHandler extends Thread {
 
     public String getUsername() {
         return username;
+    }
+
+    public NetworkGame getActiveGame() {
+        return activeGame;
+    }
+
+    public void setActiveGame(NetworkGame activeGame) {
+        this.activeGame = activeGame;
     }
 }

@@ -76,6 +76,8 @@ public class BaseServer {
         NetworkGame newGame = null;
         try {
             newGame = new NetworkGame(playerOne, playerTwo);
+            playerOne.setActiveGame(newGame);
+            playerTwo.setActiveGame(newGame);
             games.add(newGame);
             newGame.startGame();
         } catch (SlickException e) {
@@ -105,12 +107,7 @@ public class BaseServer {
     }
 
     public synchronized NetworkGame getGame(ClientHandler player) {
-        for (NetworkGame game : games) {
-            if (game.playerParticipating(player)) {
-                return game;
-            }
-        }
-        return null;
+        return player.getActiveGame();
     }
 
     public synchronized List<GameRequest> getGameRequests() {

@@ -19,7 +19,7 @@ public class ListPlayersPacket extends Packet {
 
     @Override
     public byte getID() {
-        return Config.PACKET_LIST_PLAYERS;
+        return Config.PACKET_LIST_PLAYERS_ID;
     }
 
     @Override

@@ -7,10 +7,12 @@ public class NetworkGame {
 
     private ClientHandler playerOne;
     private ClientHandler playerTwo;
+    private NetworkGameStage stage;
 
     public NetworkGame(ClientHandler playerOne, ClientHandler playerTwo) throws SlickException {
         this.playerOne = playerOne;
         this.playerTwo = playerTwo;
+        this.stage = NetworkGameStage.NO_ONE_READY;
     }
 
     public boolean playerParticipating(ClientHandler player) {
@@ -21,8 +23,13 @@ public class NetworkGame {
         // send the game packets
         playerOne.getPacketHandler().sendPacket(new StartGamePacket(playerTwo.getUsername()));
         playerTwo.getPacketHandler().sendPacket(new StartGamePacket(playerOne.getUsername()));
+    }
 
-        // TODO: Finish starting the game...
+    public void readyUp() {
+        if (stage.getID() > 1) {
+            return;
+        }
+        // TODO: Add ready up code
     }
 
     public ClientHandler getPlayerOne() {

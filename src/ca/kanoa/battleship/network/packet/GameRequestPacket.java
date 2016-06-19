@@ -12,7 +12,7 @@ public class GameRequestPacket extends Packet {
 
     @Override
     public byte getID() {
-        return Config.PACKET_GAME_REQUEST;
+        return Config.PACKET_GAME_REQUEST_ID;
     }
 
     @Override

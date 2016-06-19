@@ -3,7 +3,6 @@ package ca.kanoa.battleship.network;
 import ca.kanoa.battleship.Battleship;
 import ca.kanoa.battleship.Config;
 import ca.kanoa.battleship.network.packet.*;
-import ca.kanoa.battleship.util.Timer;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -64,14 +63,14 @@ public class BaseClient extends Thread {
         while (packetHandler.available() > 0) {
             Packet packet = packetHandler.get();
             switch (packet.getID()) {
-                case Config.PACKET_LIST_PLAYERS:
+                case Config.PACKET_LIST_PLAYERS_ID:
                     onlinePlayers = ((ListPlayersPacket) packet).getPlayers();
                     break;
-                case Config.PACKET_GAME_REQUEST:
+                case Config.PACKET_GAME_REQUEST_ID:
                     String requestedOpponent = ((GameRequestPacket) packet).getRequestedOpponent();
                     requests.add(requestedOpponent);
                     break;
-                case Config.PACKET_START_GAME:
+                case Config.PACKET_START_GAME_ID:
                     ingame = true;
                     String opponent = ((StartGamePacket) packet).getOpponent();
                     battleship.gameState.setOpponent(opponent);
