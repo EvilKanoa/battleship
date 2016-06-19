@@ -27,6 +27,7 @@ public class LobbyState extends BasicGameState implements ButtonListener {
     private TrueTypeFont usernameText;
     private Button exitButton;
     private Button refreshButton;
+    private Button aiButton;
     private Sound buttonSound;
     private Image requestButtonMain;
     private Image requestButtonHover;
@@ -57,6 +58,8 @@ public class LobbyState extends BasicGameState implements ButtonListener {
         refreshButton = new Button("refresh", new Image("img/button/refresh.tga"),
                 new Image("img/button/refresh_hover.tga"), Resize.width(348), Resize.height(177), Resize.width(40),
                 Resize.height(40));
+        aiButton = new Button("ai", new Image("img/button/ai.tga"), new Image("img/button/ai_hover.tga"),
+                Resize.width(647), Resize.height(580));
 
         refreshButton.addListener(this);
         exitButton.addListener(this);
@@ -74,6 +77,7 @@ public class LobbyState extends BasicGameState implements ButtonListener {
         usernameText.drawString(Resize.width(78), 0, username, Color.gray);
         exitButton.render();
         refreshButton.render();
+        aiButton.render();
         for (RequestButton button : requestButtons) {
             button.render();
         }
@@ -84,6 +88,7 @@ public class LobbyState extends BasicGameState implements ButtonListener {
         username = battleship.getNetwork().getUsername();
         exitButton.update();
         refreshButton.update();
+        aiButton.update();
         for (RequestButton button : requestButtons) {
             button.update();
             button.setRequested(battleship.getNetwork().getGameRequests().contains(button.getOpponent()));
