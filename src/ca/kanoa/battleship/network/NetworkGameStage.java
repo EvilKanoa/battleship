@@ -5,9 +5,8 @@ public enum NetworkGameStage {
     NO_ONE_READY(0),
     ONE_PLAYER_READY(1),
     BOTH_PLAYERS_READY(2),
-    PLAYER_ONE_TURN(3),
-    PLAYER_TWO_TURN(4),
-    GAME_OVER(5);
+    IN_GAME(3),
+    GAME_OVER(4);
 
     private int id;
 
@@ -24,9 +23,8 @@ public enum NetworkGameStage {
             case 0: return NO_ONE_READY;
             case 1: return ONE_PLAYER_READY;
             case 2: return BOTH_PLAYERS_READY;
-            case 3: return PLAYER_ONE_TURN;
-            case 4: return PLAYER_TWO_TURN;
-            case 5: return GAME_OVER;
+            case 3: return IN_GAME;
+            case 4: return GAME_OVER;
             default: return null;
         }
     }

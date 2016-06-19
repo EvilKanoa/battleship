@@ -31,7 +31,7 @@ public class ClientHandler extends Thread {
         while (connected) {
             loop();
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -39,9 +39,6 @@ public class ClientHandler extends Thread {
     }
 
     private void loop() {
-        // update components
-        packetHandler.update();
-
         // check if the client is still connected
         if (!packetHandler.connected()) {
             server.console(this, "client disconnected");
@@ -87,8 +84,21 @@ public class ClientHandler extends Thread {
                     return;
                 case Config.PACKET_READY_ID:
                     getActiveGame().readyUp();
+                    return;
+                case Config.PACKET_SHIP_SUNK_ID:
+                    getActiveGame().sunkenShip(this, (ShipSunkPacket) packet);
+                    return;
+                case Config.PACKET_ATTACK:
+                    getActiveGame().attack(this, (AttackPacket) packet);
+                    return;
+                case Config.PACKET_RESULT:
+                    getActiveGame().attackResponse(this, (ResultPacket) packet);
+                    return;
             }
         }
+
+        // update components
+        packetHandler.update();
     }
 
     public synchronized boolean online() {

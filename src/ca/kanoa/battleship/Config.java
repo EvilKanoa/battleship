@@ -13,6 +13,7 @@ public class Config {
 
     // misc game information
     public static final int MAP_SIZE                    = 10;
+    public static final long GAME_SWITCH_VIEW_DELAY     = 2500; // TODO: Make this longer
 
     // window information
     public static final int WINDOW_WIDTH                = 640;

@@ -5,17 +5,19 @@ import org.newdawn.slick.SlickException;
 
 public class Marker extends Entity {
 
-    private Image image;
+    private Image image = null;
     private boolean hit;
 
     public Marker(boolean hit, int x, int y) {
         super(x, y);
         this.hit = hit;
-        init();
     }
 
     @Override
     public void draw(float x, float y) {
+        if (image == null) {
+            init();
+        }
         image.draw(x, y);
     }
 

@@ -20,20 +20,20 @@ public class Game {
         myPlayer = -1;
     }
 
+    public synchronized boolean attack(int x, int y) {
+        return myMap.hit(x, y);
+    }
+
     public void setStatus(GameStatus status) {
         this.status = status;
     }
 
-    public Map getMyMap() {
+    public synchronized Map getMyMap() {
         return myMap;
     }
 
-    public Map getTheirMap() {
+    public synchronized Map getTheirMap() {
         return theirMap;
-    }
-
-    public GameStatus getStatus() {
-        return status;
     }
 
     public void render() {
@@ -62,5 +62,9 @@ public class Game {
 
     public void setMiddle(float middle) {
         this.middle = middle;
+    }
+
+    public GameStatus getStatus() {
+        return status;
     }
 }

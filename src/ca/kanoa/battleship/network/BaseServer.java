@@ -30,7 +30,7 @@ public class BaseServer {
         while(true) {
             update();
             try {
-                Thread.sleep(5);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

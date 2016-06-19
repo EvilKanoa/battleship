@@ -5,7 +5,7 @@ import ca.kanoa.battleship.game.Ship;
 
 public class ShipSunkPacket extends Packet {
 
-    public Ship sunkShip;
+    private Ship sunkShip;
 
     public ShipSunkPacket(Ship sunkShip) {
         this.sunkShip = sunkShip;
@@ -25,6 +25,10 @@ public class ShipSunkPacket extends Packet {
         data[3] = (byte) sunkShip.getY();
         data[4] = (byte) (sunkShip.isVertical() ? 1 : 0);
         return data;
+    }
+
+    public Ship getSunkShip() {
+        return sunkShip;
     }
 
 }

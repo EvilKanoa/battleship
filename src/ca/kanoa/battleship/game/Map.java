@@ -90,6 +90,27 @@ public class Map {
         return hit;
     }
 
+    public boolean isHit(int x, int y) {
+        if (getMarker(x, y) != null) {
+            return getMarker(x, y).isHit();
+        }
+        return false;
+    }
+
+    public Ship checkSunkenShip(int x, int y) {
+        for (Entity entity : check(x, y)) {
+            if (entity instanceof Ship) {
+                for (Integer[] cell : entity.getOccupiedSpaces()) {
+                    if (!isHit(cell[0], cell[1])) {
+                        return null;
+                    }
+                }
+                return (Ship) entity;
+            }
+        }
+        return null;
+    }
+
     public Marker getMarker(int x, int y) {
         for (Entity entity : cells[x][y]) {
             if (entity instanceof Marker) {

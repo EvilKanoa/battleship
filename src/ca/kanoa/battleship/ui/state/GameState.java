@@ -2,10 +2,8 @@ package ca.kanoa.battleship.ui.state;
 
 import ca.kanoa.battleship.Battleship;
 import ca.kanoa.battleship.Config;
+import ca.kanoa.battleship.game.*;
 import ca.kanoa.battleship.game.Game;
-import ca.kanoa.battleship.game.GameStatus;
-import ca.kanoa.battleship.game.Ship;
-import ca.kanoa.battleship.game.ShipType;
 import ca.kanoa.battleship.input.ButtonListener;
 import ca.kanoa.battleship.util.Timer;
 import org.lwjgl.input.Keyboard;
@@ -26,12 +24,17 @@ public class GameState extends BasicGameState implements ButtonListener {
     private Music backgroundMusic;
     private boolean mouseDown;
     private boolean attacked;
+    private boolean switching;
     private Timer buttonProtect;
+    private Timer switchTimer;
+    private String status;
 
     public GameState(Battleship battleship) {
         this.battleship = battleship;
         this.attacked = false;
+        this.switching = false;
         this.buttonProtect = new Timer(500);
+        this.switchTimer = new Timer(Config.GAME_SWITCH_VIEW_DELAY);
     }
 
     @Override
@@ -47,6 +50,7 @@ public class GameState extends BasicGameState implements ButtonListener {
         backgroundMusic = new Music("aud/background.ogg");
         reject = new Sound("aud/reject.wav");
         mouseDown = false;
+        status = "Choose your target!";
         imageShip = new Ship(nextShip, 0, 0, false);
     }
 
@@ -64,15 +68,11 @@ public class GameState extends BasicGameState implements ButtonListener {
             case PLAYER_ONE_TURN:
             case PLAYER_TWO_TURN:
                 if (game.myTurn()) {
-                    if (attacked) {
-                        drawCenterString(graphics, "Firing!", 10);
-                    } else {
-                        drawCenterString(graphics, "Choose your target!", 10);
-                    }
+                    drawCenterString(graphics, status, 10);
                 } else if (game.getMyPlayer() == -1) {
                     drawCenterString(graphics, "Waiting on " + opponent + "...", Config.WINDOW_HEIGHT - 30);
                 } else {
-                    drawCenterString(graphics, opponent + " is choosing their target!", Config.WINDOW_HEIGHT - 30);
+                    drawCenterString(graphics, "It is " + opponent + "'s turn", Config.WINDOW_HEIGHT - 30);
                 }
                 break;
             case GAME_OVER:
@@ -109,6 +109,7 @@ public class GameState extends BasicGameState implements ButtonListener {
                         } else {
                             imageShip = new Ship(nextShip, 0, 0, false);
                         }
+                        buttonProtect.reset();
                     } else {
                         reject.play();
                     }
@@ -120,6 +121,18 @@ public class GameState extends BasicGameState implements ButtonListener {
             case PLAYER_ONE_TURN:
             case PLAYER_TWO_TURN:
                 game.setMiddle(game.myTurn() ? Config.WINDOW_HEIGHT / 2 + 210 : Config.WINDOW_HEIGHT / 2 - 210);
+                if (switching && switchTimer.check()) {
+                    if (game.getStatus() == GameStatus.PLAYER_ONE_TURN) {
+                        game.setStatus(GameStatus.PLAYER_TWO_TURN);
+                    } else if (game.getStatus() == GameStatus.PLAYER_TWO_TURN) {
+                        game.setStatus(GameStatus.PLAYER_ONE_TURN);
+                    }
+                    if (game.myTurn()) {
+                        status = "Choose your target!";
+                    }
+                    attacked = false;
+                    switching = false;
+                }
                 break;
             case GAME_OVER:
                 break;
@@ -142,6 +155,30 @@ public class GameState extends BasicGameState implements ButtonListener {
         return game;
     }
 
+    public void attackResult(int x, int y, boolean result) {
+        game.getTheirMap().place(new Marker(result, x, y));
+        if (result && status.equals("Firing!")) {
+            status = "You hit a ship!";
+        } else if (status.equals("Firing!")){
+            status = "You missed! :(";
+        }
+        switching = true;
+        switchTimer.reset();
+    }
+
+    public void sunkShip(Ship ship) {
+        game.getTheirMap().place(ship);
+        status = "You sunk " + opponent + "'s " + ship.getType().getName();
+    }
+
+    public boolean attack(int x, int y) {
+        boolean hit = game.attack(x, y);
+
+        switching = true;
+        switchTimer.reset();
+        return hit;
+    }
+
     @Override
     public void buttonPressed(String button, int mouseX, int mouseY) {
         if (buttonProtect.check()) {
@@ -150,10 +187,11 @@ public class GameState extends BasicGameState implements ButtonListener {
                 int y = Integer.parseInt(button.substring(14).split(",")[1]);
                 if (game.getTheirMap().getMarker(x, y) == null) {
                     battleship.getNetwork().attack(x, y);
+                    status = "Firing!";
                     attacked = true;
                 }
             }
+            buttonProtect.reset();
         }
-        buttonProtect.reset();
     }
 }

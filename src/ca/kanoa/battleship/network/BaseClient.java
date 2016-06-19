@@ -2,7 +2,9 @@ package ca.kanoa.battleship.network;
 
 import ca.kanoa.battleship.Battleship;
 import ca.kanoa.battleship.Config;
+import ca.kanoa.battleship.game.Ship;
 import ca.kanoa.battleship.network.packet.*;
+import ca.kanoa.battleship.util.Timer;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -21,6 +23,8 @@ public class BaseClient extends Thread {
     private boolean connected = false;
     private boolean ingame = false;
     private String username;
+    private AttackPacket activeAttack;
+    private Timer attackResend;
 
     private List<String> onlinePlayers;
     private List<String> requests;
@@ -30,6 +34,8 @@ public class BaseClient extends Thread {
         this.onlinePlayers = new ArrayList<String>();
         this.requests = new LinkedList<String>();
         this.battleship = owner;
+        this.activeAttack = null;
+        this.attackResend = new Timer(500);
     }
 
     public boolean connect(String username) {
@@ -82,6 +88,25 @@ public class BaseClient extends Thread {
                 case Config.PACKET_PLAYER_TWO_ID:
                     battleship.gameState.getGame().setMyPlayer(2);
                     break;
+                case Config.PACKET_SHIP_SUNK_ID:
+                    ShipSunkPacket sunkPacket = (ShipSunkPacket) packet;
+                    battleship.gameState.sunkShip(sunkPacket.getSunkShip());
+                    break;
+                case Config.PACKET_ATTACK:
+                    AttackPacket attk = (AttackPacket) packet;
+                    boolean hit = battleship.gameState.attack(attk.getX(), attk.getY());
+                    packetHandler.sendPacket(new ResultPacket(attk.getX(), attk.getY(), hit));
+
+                    Ship sunken = battleship.gameState.getGame().getMyMap().checkSunkenShip(attk.getX(), attk.getY());
+                    if (sunken != null) {
+                        packetHandler.sendPacket(new ShipSunkPacket(sunken));
+                    }
+                    break;
+                case Config.PACKET_RESULT:
+                    activeAttack = null;
+                    ResultPacket res = (ResultPacket) packet;
+                    battleship.gameState.attackResult(res.getX(), res.getY(), res.isHit());
+                    break;
             }
         }
 
@@ -91,6 +116,12 @@ public class BaseClient extends Thread {
                 iterator.remove();
             }
         }
+
+        // resend attack if no reply
+        if (activeAttack != null && attackResend.check()) {
+            packetHandler.sendPacket(activeAttack);
+            attackResend.reset();
+        }
     }
 
     @Override
@@ -98,7 +129,7 @@ public class BaseClient extends Thread {
         while (connected) {
             update();
             try {
-                Thread.sleep(10);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -122,14 +153,20 @@ public class BaseClient extends Thread {
     }
 
     public void attack(int x, int y) {
-        packetHandler.sendPacket(new AttackPacket(x, y));
+        activeAttack = new AttackPacket(x, y);
+        attackResend.reset();
+        packetHandler.sendPacket(activeAttack);
     }
 
-    public String getUsername() {
-        return username;
+    public void shipSunk(Ship ship) {
+        packetHandler.sendPacket(new ShipSunkPacket(ship));
     }
 
     public void readyUp() {
         packetHandler.sendPacket(new ReadyPacket());
+    }
+
+    public String getUsername() {
+        return username;
     }
 }

@@ -64,7 +64,7 @@ public class LobbyState extends BasicGameState implements ButtonListener {
         onlinePlayers = new ArrayList<String>();
         requestButtons = new ArrayList<RequestButton>();
 
-        updateTimer = new Timer(10000);
+        updateTimer = new Timer(5000);
     }
 
     @Override

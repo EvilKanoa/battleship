@@ -35,6 +35,9 @@ public class Ship extends Entity {
 
     @Override
     public void draw(float x, float y) {
+        if (image == null) {
+            init();
+        }
         image.setCenterOfRotation(0, 0);
         if (vertical) {
             image.setRotation(90);

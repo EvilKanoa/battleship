@@ -1,5 +1,6 @@
 package ca.kanoa.battleship.network;
 
+import ca.kanoa.battleship.Config;
 import ca.kanoa.battleship.network.packet.KeepAlivePacket;
 import ca.kanoa.battleship.network.packet.Packet;
 import ca.kanoa.battleship.util.Timer;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,7 +21,8 @@ public class PacketHandler {
     protected final DataOutputStream output;
     private final List<Packet> incomingPackets;
     private final List<Packet> packetQueue;
-    private final Timer timeout;
+    private final Timer sendTimeout;
+    private final Timer recieveTimeout;
     private boolean connected;
 
     public PacketHandler(Socket socket, long timeout) throws IOException {
@@ -27,7 +30,8 @@ public class PacketHandler {
         this.output = new DataOutputStream(socket.getOutputStream());
         this.incomingPackets = Collections.synchronizedList(new LinkedList<Packet>());
         this.packetQueue = Collections.synchronizedList(new LinkedList<Packet>());
-        this.timeout = new Timer(timeout);
+        this.sendTimeout = new Timer(timeout);
+        this.recieveTimeout = new Timer(timeout * 2);
         this.connected = true;
     }
 
@@ -38,8 +42,8 @@ public class PacketHandler {
         // check if still connected
         if (!connected) {
             return;
-        } else if (timeout.check()) {
-            timeout.reset();
+        } else if (sendTimeout.check()) {
+            sendTimeout.reset();
             try {
                 output.write(Packet.buildPackage((new KeepAlivePacket()).toData()));
             } catch (SocketException e) {
@@ -50,17 +54,22 @@ public class PacketHandler {
                 // something bad happened, will retry next time
                 e.printStackTrace();
             }
+        } else if (recieveTimeout.check()) {
+            connected = false;
+            return;
         }
 
         // send all outgoing packets
-        for (Packet packet : packetQueue) {
-            try {
-                output.write(Packet.buildPackage(packet.toData()));
-            } catch (IOException e) {
-                e.printStackTrace();
+        synchronized (packetQueue) {
+            for (Iterator<Packet> iterator = packetQueue.iterator(); iterator.hasNext();) {
+                try {
+                    output.write(Packet.buildPackage(iterator.next().toData()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+            getPacketQueue().clear();
         }
-        packetQueue.clear();
 
         // read any incoming packets
         try {
@@ -68,11 +77,20 @@ public class PacketHandler {
                 int length = input.readByte();
                 byte[] data = new byte[length];
                 input.readFully(data, 0, length);
-                incomingPackets.add(Packet.read(data));
+                Packet packet = Packet.read(data);
+                if (packet.getID() == Config.PACKET_KEEP_ALIVE_ID) {
+                   recieveTimeout.reset();
+                } else {
+                    incomingPackets.add(packet);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private synchronized List<Packet> getPacketQueue() {
+        return packetQueue;
     }
 
     /**
@@ -118,7 +136,7 @@ public class PacketHandler {
      * @param packet The packet to be sent
      */
     public synchronized void sendPacket(Packet packet) {
-        this.packetQueue.add(packet);
+        getPacketQueue().add(packet);
     }
 
 }
