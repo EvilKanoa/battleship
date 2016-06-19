@@ -9,7 +9,7 @@ public class AI {
 
             if (hit == false){
 
-                hit = enemyshoot(hit);
+                
 
                 if (hit == true){
                     win = check(carrier,battleship,cruiser,sub,ptCruiser);
@@ -17,7 +17,7 @@ public class AI {
 
             } else if (hit == true){
 
-                hit = enemyhit(hit);
+                
 
                 if (hit == true){
                     win = check(carrier,battleship,cruiser,sub,ptCruiser);
@@ -29,14 +29,6 @@ public class AI {
             loseScreen(win);
         }
 
-    }
-
-    public static Boolean enemyshoot (Boolean hit){
-        return true;
-    }
-
-    public static Boolean enemyhit(Boolean hit){
-        return true;
     }
 
     public static Boolean check(String [] carrier, String [] battleship, String [] cruiser, String [] sub, String [] ptCruiser){
