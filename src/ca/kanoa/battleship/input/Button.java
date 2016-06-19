@@ -10,12 +10,12 @@ import java.util.Set;
 public class Button {
 
     private Set<ButtonListener> listeners;
-    private String id;
-    private Image main, hover;
-    private Sound sound;
+    protected String id;
+    protected Image main, hover;
+    protected Sound sound;
     protected float x, y, width, height;
-    private boolean mouseOver;
-    private boolean enable;
+    protected boolean mouseOver;
+    protected boolean enable;
     private boolean wasPressed;
     private boolean resize;
 

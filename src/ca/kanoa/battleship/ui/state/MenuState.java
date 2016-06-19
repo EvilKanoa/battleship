@@ -2,6 +2,9 @@ package ca.kanoa.battleship.ui.state;
 
 import ca.kanoa.battleship.Battleship;
 import ca.kanoa.battleship.Config;
+import ca.kanoa.battleship.game.Map;
+import ca.kanoa.battleship.game.Ship;
+import ca.kanoa.battleship.game.ShipType;
 import ca.kanoa.battleship.input.Button;
 import ca.kanoa.battleship.input.ButtonListener;
 import ca.kanoa.battleship.network.BaseClient;
@@ -18,6 +21,8 @@ public class MenuState extends BasicGameState implements ButtonListener {
     private Button exitButton;
     private Image background;
     private Sound buttonSound;
+
+    private Map testMap;
 
     public MenuState(Battleship battleship) {
         this.battleship = battleship;
@@ -38,6 +43,14 @@ public class MenuState extends BasicGameState implements ButtonListener {
                 new Image("img/button/exit_hover.tga"), 60, 114, 128, 64, buttonSound);
         connectButton.addListener(this);
         exitButton.addListener(this);
+
+        testMap = new Map();
+        testMap.place(new Ship(ShipType.CARRIER, 2, 3, true));
+        testMap.place(new Ship(ShipType.SUBMARINE, 4, 8, false));
+        testMap.hit(1,1);
+        testMap.hit(5,6);
+        testMap.hit(2,3);
+        testMap.hit(7,2);
     }
 
     @Override
@@ -46,12 +59,16 @@ public class MenuState extends BasicGameState implements ButtonListener {
         background.draw(0, 0, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
         connectButton.render();
         exitButton.render();
+
+        testMap.render(30, 30);
     }
 
     @Override
     public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int i) throws SlickException {
         connectButton.update();
         exitButton.update();
+
+        testMap.update(30, 30);
     }
 
     @Override

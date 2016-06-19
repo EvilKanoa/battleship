@@ -2,6 +2,9 @@ package ca.kanoa.battleship.game;
 
 import org.newdawn.slick.Image;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Represents any entity that is available to be placed on the game board.
  * Coordinates are from the top left.
@@ -32,6 +35,14 @@ public abstract class Entity {
         return posY;
     }
 
+    public void setY(int posY) {
+        this.posY = posY;
+    }
+
+    public void setX(int posX) {
+        this.posX = posX;
+    }
+
     /**
      * Check if a grid location collides with this entity
      * @param x The x coordinate
@@ -39,9 +50,19 @@ public abstract class Entity {
      * @return Whether the location collides with this entity
      */
     public boolean collision(int x, int y) {
-        return x >= posX && x <= posX + width && y >= posY && y <= posY + height;
+        return x >= posX && x < posX + width && y >= posY && y < posY + height;
     }
 
-    public abstract void draw(int x, int y);
+    public List<Integer[]> getOccupiedSpaces() {
+        List<Integer[]> spaces = new LinkedList<Integer[]>();
+        for (int x = posX; x <= posX + width; x++) {
+            for (int y = posY; y <= posY + height; y++) {
+                spaces.add(new Integer[]{x, y});
+            }
+        }
+        return spaces;
+    }
+
+    public abstract void draw(float x, float y);
 
 }

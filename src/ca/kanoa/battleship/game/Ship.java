@@ -15,21 +15,24 @@ public class Ship extends Entity {
         this.vertical = vertical;
         try {
             image = new Image("img/ship/" + type.getName().toLowerCase() + ".tga");
-            if (vertical) {
-                image.setRotation(90);
-            }
         } catch (SlickException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void draw(int x, int y) {
+    public void draw(float x, float y) {
         if (vertical) {
             image.setCenterOfRotation(0, 0);
+            image.setRotation(90);
             image.draw(x + image.getHeight(), y);
         } else {
             image.draw(x, y);
         }
     }
+
+    public void setVertical(boolean vertical) {
+        this.vertical = vertical;
+    }
+
 }

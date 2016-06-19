@@ -11,6 +11,9 @@ public class Config {
     public static final int SCREEN_LOBBY = 3;
     public static final int SCREEN_GAME = 4;
 
+    // misc game information
+    public static final int MAP_SIZE = 10;
+
     // window information
     public static final int WINDOW_WIDTH = 640;
     public static final int WINDOW_HEIGHT = 480;
