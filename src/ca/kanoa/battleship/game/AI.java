@@ -1,5 +1,8 @@
 package ca.kanoa.battleship.game;
 
+import ca.kanoa.battleship.network.AIGame;
+import org.newdawn.slick.SlickException;
+
 import java.util.ArrayList;
 
 /**
@@ -9,11 +12,11 @@ import java.util.ArrayList;
 public class AI {
 
     //Ceates variables for use in the class
-    Boolean win = false;
-    Boolean[] remainingShips = {false,false,false,false,false}; //remaining ships is a array which holds whether or not the ships are sunk 0 is carrier, 1 is battleship, 2 is cruiser, 3 is sub and 4 is pt boat
-    Boolean hit = false;
-    Boolean check = false;
-    Boolean[] miss = {false,false,false,false};
+    boolean win = false;
+    boolean[] remainingShips = {false,false,false,false,false}; //remaining ships is a array which holds whether or not the ships are sunk 0 is carrier, 1 is battleship, 2 is cruiser, 3 is sub and 4 is pt boat
+    boolean hit = false;
+    boolean check = false;
+    boolean[] miss = {false,false,false,false};
     int x = 0;
     int xtemp = 0;
     long temp = 0;
@@ -21,9 +24,41 @@ public class AI {
     int ytemp = 0;
     ArrayList filledGrids = new ArrayList();
     private Map myMap;
+    private Map theirMap;
+    private AIGame game;
+
+    public AI() throws SlickException {
+        myMap = new Map("mymap", null);
+        theirMap = new Map("theirmap", null);
+    }
+
+    /**
+     * Gives the AI the option to place its ships into it's internal map
+     */
+    public void placeShips() { }
+
+    /**
+     * Gets called when the AI has sunk one of the players ships. Used to update the map
+     * @param theirShip
+     */
+    public void sunkenShip(Ship theirShip) { }
+
+    /**
+     * Gets called for each time a player attacks the AI
+     * @param x The x position of the player's attack
+     * @param y The y position of the player's attack
+     * @return The ship sunk if a player hit a ship, otherwise null
+     */
+    public Ship attack(int x, int y) { return null; }
+
+    /**
+     * Causes the AI to determine where its next attack will be
+     * @return An array of length two with the x and y coordinate
+     */
+    public int[] getAttack() { return new int[]{/* x */ 0, /* y */ 0}; }
 
     //Creates a method to conrol the AI's shooting
-    public void EnemyShoot(Boolean[] remainingShips, Boolean [] miss, Boolean lose, Boolean hit){
+    public void EnemyShoot(boolean[] remainingShips, boolean [] miss, boolean lose, boolean hit){
 
         //creates variables for use in the method
         String j;

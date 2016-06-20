@@ -30,4 +30,6 @@ public interface NetworkGame {
     //gets player two
     ClientHandler getPlayerTwo();
 
+    public void update();
+
 }

@@ -110,6 +110,9 @@ public class MultiplayerGame implements NetworkGame {
     }
 
     @Override
+    public void update() { }
+
+    @Override
     //Creates a vs script
     public String toString() {
         return playerOne.getUsername() + " vs. " + playerTwo.getUsername();
