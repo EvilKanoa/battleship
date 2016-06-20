@@ -18,6 +18,7 @@ public class Battleship extends StateBasedGame {
     public final MenuState menuState;
     public final SplashState splashState;
     public final GameoverState gameoverState;
+    public final LeaderboardState leaderboardState;
     private BaseClient networkClient;
 
     //Creates a method to activate the main states
@@ -30,6 +31,7 @@ public class Battleship extends StateBasedGame {
         menuState = new MenuState(this);
         splashState = new SplashState(this);
         gameoverState = new GameoverState();
+        leaderboardState = new LeaderboardState();
     }
 
     @Override
@@ -41,6 +43,7 @@ public class Battleship extends StateBasedGame {
         this.addState(lobbyState);
         this.addState(menuState);
         this.addState(gameoverState);
+        this.addState(leaderboardState);
     }
 
     //Method to search for the network

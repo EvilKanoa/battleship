@@ -116,7 +116,14 @@ public class BaseClient extends Thread {
                 case Config.PACKET_GAME_WON:
                     GameWonPacket winner = (GameWonPacket) packet;
                     battleship.gameState.setWinner(winner.getWinner());
+                    battleship.leaderboardState.setWon(winner.getWinner() ==
+                            battleship.gameState.getGame().getMyPlayer());
                     battleship.gameState.getGame().setStatus(GameStatus.GAME_OVER);
+                    break;
+                case Config.PACKET_LEADERBOARD:
+                    LeaderboardPacket leaderboard = (LeaderboardPacket) packet;
+                    battleship.leaderboardState.setLeaderboard(leaderboard.getLeaderboard());
+                    battleship.enterState(Config.SCREEN_LEADERBOARD);
                     break;
             }
         }

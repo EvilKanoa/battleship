@@ -1,6 +1,8 @@
 package ca.kanoa.battleship.network.packet;
 
 import ca.kanoa.battleship.Config;
+import ca.kanoa.battleship.files.Leaderboard;
+import ca.kanoa.battleship.files.LeaderboardEntry;
 import ca.kanoa.battleship.game.Ship;
 import ca.kanoa.battleship.game.ShipType;
 
@@ -52,6 +54,12 @@ public abstract class Packet {
                 return new ResultPacket(data[1], data[2], data[3] == 1);
             case Config.PACKET_GAME_WON:
                 return new GameWonPacket(data[1]);
+            case Config.PACKET_LEADERBOARD:
+                LeaderboardEntry[] leaderboard = new LeaderboardEntry[(data.length - 1) / 18];
+                for (int i = 0; i < leaderboard.length; i++) {
+                    leaderboard[i] = LeaderboardEntry.fromData(Arrays.copyOfRange(data, 1 + i * 18, 19 + i * 18));
+                }
+                return new LeaderboardPacket(leaderboard);
             default:
                 return null;
         }

@@ -11,6 +11,7 @@ public class Config {
     public static final int SCREEN_LOBBY                = 3;
     public static final int SCREEN_GAME                 = 4;
     public static final int SCREEN_GAMEOVER             = 5;
+    public static final int SCREEN_LEADERBOARD          = 6;
 
     // misc game information
     public static final int MAP_SIZE                    = 10;
@@ -40,5 +41,6 @@ public class Config {
     public static final byte PACKET_ATTACK              = 0x09;
     public static final byte PACKET_RESULT              = 0x0A;
     public static final byte PACKET_GAME_WON            = 0x0B;
+    public static final byte PACKET_LEADERBOARD         = 0x0C;
 
 }
