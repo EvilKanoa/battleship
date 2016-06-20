@@ -145,113 +145,225 @@ public class AI {
                 if (x > 0 && x < 9 && y > 0 && y < 9){
                     //Searches for the ship and seeks out after it
                     if (miss[0] == true && miss [1] == true && miss [2] == true){
-                        x--;
-                        miss[0] = myMap.hit(x,y);
-                        check = myMap.checkSunkenShip(x, y) != null;
+                        xtemp--;
+                        miss[0] = myMap.hit(xtemp,y);
+                        
+                        if (miss[0] = false) {
+                            xtemp = x;
+                        }
+
                     }else if (miss[0] == false && miss [1] == true && miss [2] == true){
-                        y--;
-                        miss[1] = myMap.hit(x,y);
+                        ytemp--;
+                        miss[1] = myMap.hit(x,ytemp);
+
+                        if (miss[1] = false) {
+                            ytemp = y;
+                        }
+
                     }else if (miss[0] == false && miss [1] == false && miss [2] == true){
-                        x++;
-                        miss[2] = myMap.hit(x,y);
+                        xtemp++;
+                        miss[2] = myMap.hit(xtemp,y);
+
+                        if (miss[2] = false) {
+                            xtemp = x;
+                        }
+
                     }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-                        y++;
-                        miss[3] = myMap.hit(x,y);
+                        ytemp++;
+                        miss[3] = myMap.hit(x,ytemp);
+
+                        if (miss[3] = false) {
+                            ytemp = y;
+                        }
 
                     }
 
                 }else if (x == 0 && x < 9 && y > 0 && y < 9){//Searches for ship if ship is against a wall
                     miss[0] = false;
                     if (miss[0] == false && miss [1] == true && miss [2] == true){
-                        y--;
-                        miss[1] = myMap.hit(x,y);
+                        ytemp--;
+                        miss[1] = myMap.hit(x,ytemp);
+
+                        if (miss[1] = false) {
+                            ytemp = y;
+                        }
+
                     }else if (miss[0] == false && miss [1] == false && miss [2] == true){
-                        x++;
-                        miss[2] = myMap.hit(x,y);
+                         xtemp++;
+                        miss[2] = myMap.hit(xtemp,y);
+
+                        if (miss[2] = false) {
+                            xtemp = x;
+                        }
+
                     }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-                        y++;
-                        miss[3] = myMap.hit(x,y);
+                      ytemp++;
+                        miss[3] = myMap.hit(x,ytemp);
+
+                        if (miss[3] = false) {
+                            ytemp = y;
+                        }
 
                     }
 
                 }else if (x > 0 && x == 9 && y > 0 && y < 9){ //Searches for ship if ship is against a wall
                     if (miss[0] == true && miss [1] == true && miss [2] == true){
-                        x--;
-                        miss[0] = myMap.hit(x,y);
+                        xtemp--;
+                        miss[0] = myMap.hit(xtemp,y);
+
+                        if (miss[0] = false) {
+                            xtemp = x;
+                        }
+
                     }else if (miss[0] == false && miss [1] == true && miss [2] == true){
-                        y--;
-                        miss[1] = myMap.hit(x,y);
+                        ytemp--;
+                        miss[1] = myMap.hit(x,ytemp);
+
+                        if (miss[1] = false) {
+                            ytemp = y;
+                        }
+
                         miss[2] = false;
                     }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-                        y++;
-                        miss[3] = myMap.hit(x,y);
+                       ytemp++;
+                        miss[3] = myMap.hit(x,ytemp);
+
+                        if (miss[3] = false) {
+                            ytemp = y;
+                        }
                     }
 
                 }else if (x > 0 && x < 9 && y == 0 && y < 9){ //Searches for ship if ship is against a wall
                     if (miss[0] == true && miss [1] == true && miss [2] == true){
-                        x--;
-                        miss[0] = myMap.hit(x,y);
+                        xtemp--;
+                        miss[0] = myMap.hit(xtemp,y);
+
+                        if (miss[0] = false) {
+                            xtemp = x;
+                        }
+
                         miss[1] = false;
                     }else if (miss[0] == false && miss [1] == false && miss [2] == true){
-                        x++;
-                        miss[2] = myMap.hit(x,y);
+                         xtemp++;
+                        miss[2] = myMap.hit(xtemp,y);
+
+                        if (miss[2] = false) {
+                            xtemp = x;
+                        }
+
                     }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-                        y++;
-                        miss[3] = myMap.hit(x,y);
+                        ytemp++;
+                        miss[3] = myMap.hit(x,ytemp);
+
+                        if (miss[3] = false) {
+                            ytemp = y;
+                        }
                     }
                 }else if (x > 0 && x < 9 && y > 0 && y == 9){ //Searches for ship if ship is against a wall
                     if (miss[0] == true && miss [1] == true && miss [2] == true){
-                        x--;
-                        miss[0] = myMap.hit(x,y);
+                        xtemp--;
+                        miss[0] = myMap.hit(xtemp,y);
+
+                        if (miss[0] = false) {
+                            xtemp = x;
+                        }
+
                     }else if (miss[0] == false && miss [1] == true && miss [2] == true){
-                        y--;
-                        miss[1] = myMap.hit(x,y);
+                        ytemp--;
+                        miss[1] = myMap.hit(x,ytemp);
+
+                        if (miss[1] = false) {
+                            ytemp = y;
+                        }
+
                     }else if (miss[0] == false && miss [1] == false && miss [2] == true){
-                        x++;
-                        miss[2] = myMap.hit(x,y);
+                         xtemp++;
+                        miss[2] = myMap.hit(xtemp,y);
+
+                        if (miss[2] = false) {
+                            xtemp = x;
+                        }
+
                     }
 
                 }else if (x == 0 && x < 9 && y == 0 && y < 9){ //Searches for ship if ship is against two walls
                     miss[0] = false;
                     miss[1] = false;
                     if (miss[0] == false && miss [1] == false && miss [2] == true){
-                        x++;
-                        miss[2] = myMap.hit(x,y);
+                        xtemp++;
+                        miss[2] = myMap.hit(xtemp,y);
+
+                        if (miss[2] = false) {
+                            xtemp = x;
+                        }
+
                     }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-                        y++;
-                        miss[3] = myMap.hit(x,y);
+                        ytemp++;
+                        miss[3] = myMap.hit(x,ytemp);
+
+                        if (miss[3] = false) {
+                            ytemp = y;
+                        }
 
                     }
 
                 }else if (x == 0 && x < 9 && y > 0 && y == 9){ //Searches for ship if ship is against two walls
                     miss[0] = false;
                     if (miss[0] == false && miss [1] == true && miss [2] == true){
-                        y--;
-                        miss[1] = myMap.hit(x,y);
+                        ytemp--;
+                        miss[1] = myMap.hit(x,ytemp);
+
+                        if (miss[1] = false) {
+                            ytemp = y;
+                        }
+
                     }else if (miss[0] == false && miss [1] == false && miss [2] == true){
-                        x++;
-                        miss[2] = myMap.hit(x,y);
+                         xtemp++;
+                        miss[2] = myMap.hit(xtemp,y);
+
+                        if (miss[2] = false) {
+                            xtemp = x;
+                        }
+
                     }
 
                 }else if (x > 0 && x == 9 && y == 0 && y < 9){ //Searches for ship if ship is against two walls
                     if (miss[0] == true && miss [1] == true && miss [2] == true){
-                        x--;
-                        miss[0] = myMap.hit(x,y);
+                        xtemp--;
+                        miss[0] = myMap.hit(xtemp,y);
+
+                        if (miss[0] = false) {
+                            xtemp = x;
+                        }
+
                         miss[1] = false;
                         miss[2] = false;
                     }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-                        y++;
-                        miss[3] = myMap.hit(x,y);
+                        ytemp++;
+                        miss[3] = myMap.hit(x,ytemp);
+
+                        if (miss[3] = false) {
+                            ytemp = y;
+                        }
 
                     }
 
                 }else if (x > 0 && x == 9 && y > 0 && y == 9){ //Searches for ship if ship is against two walls
                     if (miss[0] == true && miss [1] == true && miss [2] == true){
-                        x--;
-                        miss[0] = myMap.hit(x,y);
+                        xtemp--;
+                        miss[0] = myMap.hit(xtemp,y);
+
+                        if (miss[0] = false) {
+                            xtemp = x;
+                        }
+
                     }else if (miss[0] == false && miss [1] == true && miss [2] == true){
-                        y--;
-                        miss[1] = myMap.hit(x,y);
+                        ytemp--;
+                        miss[1] = myMap.hit(x,ytemp);
+
+                        if (miss[1] = false) {
+                            ytemp = y;
+                        }
 
                     }
 
@@ -259,7 +371,9 @@ public class AI {
 
                 //Checks to make sure spot has not been guessed yet
                 if (miss[0] == true && miss [1] == true && miss [2] == true){
-                    
+
+                    check = myMap.checkSunkenShip(xtemp, y) != null;
+
                     j = xtemp + "," + y;
                 
                     if (filledGrids.indexOf(j) == -1) {
