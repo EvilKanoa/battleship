@@ -112,7 +112,7 @@ public class AI {
                     if (miss[0] == true && miss [1] == true && miss [2] == true){
                         x--;
                         miss[0] = myMap.hit(x,y);
-                        check = myMap.checkSunkenShip(x, y);
+                        check = myMap.checkSunkenShip(x, y) != null;
                     }else if (miss[0] == false && miss [1] == true && miss [2] == true){
                         y--;
                         miss[1] = myMap.hit(x,y);
