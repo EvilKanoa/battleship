@@ -66,7 +66,9 @@ public class Leaderboard {
                 error = true;
             }
         }
-        file.close();
+        if (entries.size() > 0) {
+            file.flush();
+        }
         return !error;
     }
 

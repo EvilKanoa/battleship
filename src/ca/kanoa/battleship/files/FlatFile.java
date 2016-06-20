@@ -88,11 +88,11 @@ public class FlatFile {
     }
 
     /**
-     * Closes the output file. Must be called after writing!
+     * Flushes the output file. Must be called after writing!
      */
-    public void close() {
+    public void flush() {
         try {
-            output.close();
+            output.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

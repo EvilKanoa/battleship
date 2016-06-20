@@ -22,13 +22,18 @@ public class Map {
     private String mapId;
 
     //Creates method for making the map
-    public Map(String mapId, ButtonListener buttonListener) throws SlickException {
+    public Map(String mapId, ButtonListener buttonListener, boolean graphical) throws SlickException {
         this.mapId = mapId;
 
-        //draws the grid
-        grid = new Image("img/grid.tga");
-        //prepares the cells
-        cellButton = new Image("img/button/cell_hover.tga");
+        if (graphical) {
+            try {
+                grid = new Image("img/grid.tga");
+                //prepares the cells
+                cellButton = new Image("img/button/cell_hover.tga");
+            } catch (SlickException e) {
+                e.printStackTrace();
+            }
+        }
 
         //creates a list of cells so it knows where to check
         cells = new List[Config.MAP_SIZE][Config.MAP_SIZE];

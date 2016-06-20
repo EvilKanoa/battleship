@@ -15,11 +15,11 @@ public class Game {
     private float middle;
 
     //Sets up the game
-    public Game(ButtonListener buttonListener) throws SlickException {
+    public Game(ButtonListener buttonListener, boolean graphical) throws SlickException {
         status = GameStatus.PLACE_SHIPS;
         middle = Config.WINDOW_HEIGHT / 2;
-        myMap = new Map("mymap", buttonListener);
-        theirMap = new Map("theirmap", buttonListener);
+        myMap = new Map("mymap", buttonListener, graphical);
+        theirMap = new Map("theirmap", buttonListener, graphical);
         myPlayer = -1;
     }
 

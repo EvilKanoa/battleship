@@ -5,6 +5,7 @@ import ca.kanoa.battleship.game.Ship;
 import ca.kanoa.battleship.game.ShipType;
 import ca.kanoa.battleship.network.packet.*;
 import ca.kanoa.battleship.util.Timer;
+import org.newdawn.slick.SlickException;
 
 public class AIGame implements NetworkGame {
 
@@ -26,6 +27,11 @@ public class AIGame implements NetworkGame {
         this.playerShipsSunk = new boolean[]{false, false, false, false, false};
         this.aiShipsSunk = new boolean[]{false, false, false, false, false};
         this.player = player;
+        try {
+            this.ai = new AI();
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -45,8 +51,8 @@ public class AIGame implements NetworkGame {
         }
         stage = NetworkGameStage.IN_GAME;
         server.console(this, "initiating game");
-        player.getPacketHandler().sendPacket(new PlayerOnePacket());
         ai.placeShips();
+        player.getPacketHandler().sendPacket(new PlayerOnePacket());
     }
 
     @Override
