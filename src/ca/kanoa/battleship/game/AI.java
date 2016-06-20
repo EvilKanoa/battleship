@@ -11,25 +11,26 @@ import java.util.ArrayList;
  */
 public class AI {
 
-    //Ceates variables for use in the class
+    //Creates variables for use in the class
     boolean win = false;
     boolean[] shipsSunk = {false,false,false,false,false}; //remaining ships is a array which holds whether or not the ships are sunk 0 is carrier, 1 is battleship, 2 is cruiser, 3 is sub and 4 is pt boat
     boolean hit = false;
     boolean check = false;
-    boolean[] miss = {false,false,false,false};
+    boolean[] miss = {true,true,true,true};
     int x = 0;
-    int xtemp = 0;
+    int xtemp = -1;
     long temp = 0;
     int y;
-    int ytemp = 0;
+    int ytemp = -1;
     ArrayList filledGrids = new ArrayList();
     private Map myMap;
     private Map theirMap;
     private AIGame game;
 
-    public AI() throws SlickException {
+    public AI(AIGame game) throws SlickException {
         myMap = new Map("mymap", null, false);
         theirMap = new Map("theirmap", null, false);
+        this.game = game;
     }
 
     /**
@@ -42,7 +43,10 @@ public class AI {
      * @param theirShip
      */
     public void sunkenShip(Ship theirShip) {
-        shipsSunk[theirShip.getType().getShipID() - 1] = true;
+        // shipsSunk[theirShip.getType().getShipID() - 1] = true;
+        miss = new boolean[]{true, true, true, true};
+        xtemp = -1;
+        ytemp = -1;
     }
 
     /**
@@ -52,6 +56,18 @@ public class AI {
      * @return The ship sunk if a player hit a ship, otherwise null
      */
     public Ship attack(int x, int y) { return null; }
+
+    public void result(int x, int y, boolean newHit) {
+        boolean lastHit = this.hit;
+        theirMap.place(new Marker(hit, x, y));
+        if (lastHit && !newHit) {
+            if (miss[0]) miss[0] = false;
+            else if (miss[1]) miss[1] = false;
+            else if (miss[2]) miss[2] = false;
+            else if (miss[3]) miss[3] = false;
+        }
+        this.hit = newHit;
+    }
 
     /**
      * Causes the AI to determine where its next attack will be
@@ -66,392 +82,275 @@ public class AI {
         long tiles;
 
 
-            //Makes sure the AI has not hit a ship yet
-            if (hit == false){
+        //Makes sure the AI has not hit a ship yet
+        if (hit == false){
 
-                //Checks to see if the Carrier and the Battleship are still in play
-                if (!game.isPlayerShipSunk(ShipType.CARRIER) || !game.isPlayerShipSunk(ShipType.BATTLESHIP)){
+            //Checks to see if the Carrier and the Battleship are still in play
+            if (!game.isPlayerShipSunk(ShipType.CARRIER) || !game.isPlayerShipSunk(ShipType.BATTLESHIP)){
 
-                    //Partitions the shooting to target the Carrier and the Battleship
-                    multiplier = 4;
-                    numberOfTiles = 20;
+                //Partitions the shooting to target the Carrier and the Battleship
+                multiplier = 4;
+                numberOfTiles = 20;
 
-                }else if (!game.isPlayerShipSunk(ShipType.CRUISER) || !game.isPlayerShipSunk(ShipType.SUBMARINE)){ //Checks to see if the Cruiser and the Sub are still in play
+            }else if (!game.isPlayerShipSunk(ShipType.CRUISER) || !game.isPlayerShipSunk(ShipType.SUBMARINE)){ //Checks to see if the Cruiser and the Sub are still in play
 
-                    //Partitions the shooting to target the Cruiser and the Sub
-                    multiplier = 3;
-                    numberOfTiles = 33;
+                //Partitions the shooting to target the Cruiser and the Sub
+                multiplier = 3;
+                numberOfTiles = 33;
 
-                }else if (!game.isPlayerShipSunk(ShipType.DESTROYER)){ //Checks to see if the destroyer is still in play
+            }else if (!game.isPlayerShipSunk(ShipType.DESTROYER)){ //Checks to see if the destroyer is still in play
 
-                    //Partitions the shooting to target the Destroyer
-                    multiplier = 2;
-                    numberOfTiles = 50;
+                //Partitions the shooting to target the Destroyer
+                multiplier = 2;
+                numberOfTiles = 50;
 
-                }
+            }
 
-                //Generates a tile
-                tiles = Math.round(Math.random() * numberOfTiles) * multiplier;
+            //Generates a tile
+            tiles = Math.round(Math.random() * numberOfTiles) * multiplier;
 
-                //Splits the number into rows and collums
-                for (long i = tiles; i > 9 ; i = i-10){
+            y=0;
 
-                    y++;
-                    temp = i;
+            //Splits the number into rows and collums
+            for (long i = tiles; i > 9 ; i = i-10){
 
-                }
+                y++;
+                temp = i;
 
-                if (temp > 9){
+            }
 
-                    temp = temp - 10;
-                    y++;
+            if (tiles < 10) {
+                temp = tiles;
+            }
 
-                }
+            if (temp > 9){
+                temp = temp - 10;
+                y++;
 
-                //Makes sure to hit odd numbered tiles for evenly partitioned numbers
-                if (multiplier == 2 && y%2 == 1 || multiplier == 4 && y%2 == 1){
+            }
+
+            //Makes sure to hit odd numbered tiles for evenly partitioned numbers
+            if (multiplier == 2 && y%2 == 1 || multiplier == 4 && y%2 == 1){
+                if (temp==0){
+                    temp = 9;
+                }else {
                     temp = temp - 1;
                 }
+            }
 
-                //converts long to string
-                j = Long.toString(temp);
-                x = Integer.parseInt(j);
+            //converts long to string
+            j = Long.toString(temp);
+            x = Integer.parseInt(j);
 
-                //Creates co-ordinants
-                j = x + "," + y;
+            //Creates co-ordinants
+            j = x + "," + y;
 
-                //Makes sure that the co-ordinant has not already been generated
+            //Makes sure that the co-ordinant has not already been generated
+            if (filledGrids.indexOf(j) == -1) {
+                filledGrids.add(j);
+
+            }else {//Generates new co-ordinant
+                return getAttack();
+            }
+
+            return new int [] {x,y};
+        } else if (hit == true){
+            //makes sure the point isn't against a wall
+            if (miss[0] == false || miss[2] == false || xtemp == -1) {
+                xtemp = x;
+            }
+            if (miss[1] == false || miss[3] == false || ytemp == -1) {
+                ytemp = y;
+            }
+            if (xtemp > 0 && xtemp < 9 && ytemp > 0 && ytemp< 9){
+                //Searches for the ship and seeks out after it
+                if (miss[0] == true && miss [1] == true && miss [2] == true){
+                    xtemp--;
+
+
+
+                }else if (miss[0] == false && miss [1] == true && miss [2] == true){
+                    ytemp--;
+
+
+
+                }else if (miss[0] == false && miss [1] == false && miss [2] == true){
+                    xtemp++;
+
+                }else if (miss[0] == false && miss [1] == false && miss [2] == false){
+                    ytemp++;
+
+                }
+
+            }else if (xtemp == 0 && xtemp < 9 && ytemp > 0 && ytemp < 9){//Searches for ship if ship is against a wall
+                miss[0] = false;
+                if (miss[0] == false && miss [1] == true && miss [2] == true){
+                    ytemp--;
+
+                }else if (miss[0] == false && miss [1] == false && miss [2] == true){
+                    xtemp++;
+
+                }else if (miss[0] == false && miss [1] == false && miss [2] == false){
+                    ytemp++;
+
+                }
+
+            }else if (xtemp > 0 && xtemp == 9 && ytemp > 0 && ytemp < 9){ //Searches for ship if ship is against a wall
+                if (miss[0] == true && miss [1] == true && miss [2] == true){
+                    xtemp--;
+
+                }else if (miss[0] == false && miss [1] == true && miss [2] == true){
+                    ytemp--;
+
+                    miss[2] = false;
+                }else if (miss[0] == false && miss [1] == false && miss [2] == false){
+                    ytemp++;
+                }
+
+            }else if (xtemp > 0 && xtemp < 9 && ytemp == 0 && ytemp < 9){ //Searches for ship if ship is against a wall
+                if (miss[0] == true && miss [1] == true && miss [2] == true){
+                    xtemp--;
+
+                    miss[1] = false;
+                }else if (miss[0] == false && miss [1] == false && miss [2] == true){
+                    xtemp++;
+
+                }else if (miss[0] == false && miss [1] == false && miss [2] == false){
+                    ytemp++;
+                }
+            }else if (xtemp > 0 && xtemp < 9 && ytemp > 0 && ytemp == 9){ //Searches for ship if ship is against a wall
+                if (miss[0] == true && miss [1] == true && miss [2] == true){
+                    xtemp--;
+
+                }else if (miss[0] == false && miss [1] == true && miss [2] == true){
+                    ytemp--;
+
+                }else if (miss[0] == false && miss [1] == false && miss [2] == true){
+                    xtemp++;
+
+                }
+
+            }else if (xtemp == 0 && xtemp < 9 && ytemp == 0 && ytemp < 9){ //Searches for ship if ship is against two walls
+                miss[0] = false;
+                miss[1] = false;
+                if (miss[0] == false && miss [1] == false && miss [2] == true){
+                    xtemp++;
+
+                }else if (miss[0] == false && miss [1] == false && miss [2] == false){
+                    ytemp++;
+
+                }
+
+            }else if (xtemp == 0 && xtemp < 9 && ytemp > 0 && ytemp == 9){ //Searches for ship if ship is against two walls
+                miss[0] = false;
+                if (miss[0] == false && miss [1] == true && miss [2] == true){
+                    ytemp--;
+                }else if (miss[0] == false && miss [1] == false && miss [2] == true){
+                    xtemp++;
+                }
+
+            }else if (xtemp > 0 && xtemp == 9 && ytemp == 0 && ytemp < 9){ //Searches for ship if ship is against two walls
+                if (miss[0] == true && miss [1] == true && miss [2] == true){
+                    xtemp--;
+
+                    miss[1] = false;
+                    miss[2] = false;
+                }else if (miss[0] == false && miss [1] == false && miss [2] == false){
+                    ytemp++;
+                }
+
+            }else if (xtemp > 0 && xtemp == 9 && ytemp > 0 && ytemp == 9){ //Searches for ship if ship is against two walls
+                if (miss[0] == true && miss [1] == true && miss [2] == true){
+                    xtemp--;
+
+                }else if (miss[0] == false && miss [1] == true && miss [2] == true){
+                    ytemp--;
+                }
+
+            }
+
+            //Checks to make sure spot has not been guessed yet and commits
+            if (miss[0] == true && miss [1] == true && miss [2] == true){
+
+                check = myMap.checkSunkenShip(xtemp, y) != null;
+
+                j = xtemp + "," + y;
+
                 if (filledGrids.indexOf(j) == -1) {
                     filledGrids.add(j);
-                
-                    hit = myMap.hit(x,y);
 
-                }else {//Generates new co-ordinant
+                    return new int [] {x,y};
+
+                }else {
                     getAttack();
                 }
 
-                return new int [] {x,y};
-            } else if (hit == true){
+            }else if (miss[0] == false && miss [1] == true && miss [2] == true){
 
+                j = x + "," + ytemp;
 
-                //makes sure the point isn't against a wall
-                if (x > 0 && x < 9 && y > 0 && y < 9){
-                    //Searches for the ship and seeks out after it
-                    if (miss[0] == true && miss [1] == true && miss [2] == true){
-                        xtemp--;
-                        miss[0] = myMap.hit(xtemp,y);
-                        
-                        if (miss[0] = false) {
-                            xtemp = x;
-                        }
+                if (filledGrids.indexOf(j) == -1) {
+                    filledGrids.add(j);
 
-                    }else if (miss[0] == false && miss [1] == true && miss [2] == true){
-                        ytemp--;
-                        miss[1] = myMap.hit(x,ytemp);
+                    return new int [] {x,y};
 
-                        if (miss[1] = false) {
-                            ytemp = y;
-                        }
-
-                    }else if (miss[0] == false && miss [1] == false && miss [2] == true){
-                        xtemp++;
-                        miss[2] = myMap.hit(xtemp,y);
-
-                        if (miss[2] = false) {
-                            xtemp = x;
-                        }
-
-                    }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-                        ytemp++;
-                        miss[3] = myMap.hit(x,ytemp);
-
-                        if (miss[3] = false) {
-                            ytemp = y;
-                        }
-
-                    }
-
-                }else if (x == 0 && x < 9 && y > 0 && y < 9){//Searches for ship if ship is against a wall
-                    miss[0] = false;
-                    if (miss[0] == false && miss [1] == true && miss [2] == true){
-                        ytemp--;
-                        miss[1] = myMap.hit(x,ytemp);
-
-                        if (miss[1] = false) {
-                            ytemp = y;
-                        }
-
-                    }else if (miss[0] == false && miss [1] == false && miss [2] == true){
-                         xtemp++;
-                        miss[2] = myMap.hit(xtemp,y);
-
-                        if (miss[2] = false) {
-                            xtemp = x;
-                        }
-
-                    }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-                      ytemp++;
-                        miss[3] = myMap.hit(x,ytemp);
-
-                        if (miss[3] = false) {
-                            ytemp = y;
-                        }
-
-                    }
-
-                }else if (x > 0 && x == 9 && y > 0 && y < 9){ //Searches for ship if ship is against a wall
-                    if (miss[0] == true && miss [1] == true && miss [2] == true){
-                        xtemp--;
-                        miss[0] = myMap.hit(xtemp,y);
-
-                        if (miss[0] = false) {
-                            xtemp = x;
-                        }
-
-                    }else if (miss[0] == false && miss [1] == true && miss [2] == true){
-                        ytemp--;
-                        miss[1] = myMap.hit(x,ytemp);
-
-                        if (miss[1] = false) {
-                            ytemp = y;
-                        }
-
-                        miss[2] = false;
-                    }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-                       ytemp++;
-                        miss[3] = myMap.hit(x,ytemp);
-
-                        if (miss[3] = false) {
-                            ytemp = y;
-                        }
-                    }
-
-                }else if (x > 0 && x < 9 && y == 0 && y < 9){ //Searches for ship if ship is against a wall
-                    if (miss[0] == true && miss [1] == true && miss [2] == true){
-                        xtemp--;
-                        miss[0] = myMap.hit(xtemp,y);
-
-                        if (miss[0] = false) {
-                            xtemp = x;
-                        }
-
-                        miss[1] = false;
-                    }else if (miss[0] == false && miss [1] == false && miss [2] == true){
-                         xtemp++;
-                        miss[2] = myMap.hit(xtemp,y);
-
-                        if (miss[2] = false) {
-                            xtemp = x;
-                        }
-
-                    }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-                        ytemp++;
-                        miss[3] = myMap.hit(x,ytemp);
-
-                        if (miss[3] = false) {
-                            ytemp = y;
-                        }
-                    }
-                }else if (x > 0 && x < 9 && y > 0 && y == 9){ //Searches for ship if ship is against a wall
-                    if (miss[0] == true && miss [1] == true && miss [2] == true){
-                        xtemp--;
-                        miss[0] = myMap.hit(xtemp,y);
-
-                        if (miss[0] = false) {
-                            xtemp = x;
-                        }
-
-                    }else if (miss[0] == false && miss [1] == true && miss [2] == true){
-                        ytemp--;
-                        miss[1] = myMap.hit(x,ytemp);
-
-                        if (miss[1] = false) {
-                            ytemp = y;
-                        }
-
-                    }else if (miss[0] == false && miss [1] == false && miss [2] == true){
-                         xtemp++;
-                        miss[2] = myMap.hit(xtemp,y);
-
-                        if (miss[2] = false) {
-                            xtemp = x;
-                        }
-
-                    }
-
-                }else if (x == 0 && x < 9 && y == 0 && y < 9){ //Searches for ship if ship is against two walls
-                    miss[0] = false;
-                    miss[1] = false;
-                    if (miss[0] == false && miss [1] == false && miss [2] == true){
-                        xtemp++;
-                        miss[2] = myMap.hit(xtemp,y);
-
-                        if (miss[2] = false) {
-                            xtemp = x;
-                        }
-
-                    }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-                        ytemp++;
-                        miss[3] = myMap.hit(x,ytemp);
-
-                        if (miss[3] = false) {
-                            ytemp = y;
-                        }
-
-                    }
-
-                }else if (x == 0 && x < 9 && y > 0 && y == 9){ //Searches for ship if ship is against two walls
-                    miss[0] = false;
-                    if (miss[0] == false && miss [1] == true && miss [2] == true){
-                        ytemp--;
-                        miss[1] = myMap.hit(x,ytemp);
-
-                        if (miss[1] = false) {
-                            ytemp = y;
-                        }
-
-                    }else if (miss[0] == false && miss [1] == false && miss [2] == true){
-                         xtemp++;
-                        miss[2] = myMap.hit(xtemp,y);
-
-                        if (miss[2] = false) {
-                            xtemp = x;
-                        }
-
-                    }
-
-                }else if (x > 0 && x == 9 && y == 0 && y < 9){ //Searches for ship if ship is against two walls
-                    if (miss[0] == true && miss [1] == true && miss [2] == true){
-                        xtemp--;
-                        miss[0] = myMap.hit(xtemp,y);
-
-                        if (miss[0] = false) {
-                            xtemp = x;
-                        }
-
-                        miss[1] = false;
-                        miss[2] = false;
-                    }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-                        ytemp++;
-                        miss[3] = myMap.hit(x,ytemp);
-
-                        if (miss[3] = false) {
-                            ytemp = y;
-                        }
-
-                    }
-
-                }else if (x > 0 && x == 9 && y > 0 && y == 9){ //Searches for ship if ship is against two walls
-                    if (miss[0] == true && miss [1] == true && miss [2] == true){
-                        xtemp--;
-                        miss[0] = myMap.hit(xtemp,y);
-
-                        if (miss[0] = false) {
-                            xtemp = x;
-                        }
-
-                    }else if (miss[0] == false && miss [1] == true && miss [2] == true){
-                        ytemp--;
-                        miss[1] = myMap.hit(x,ytemp);
-
-                        if (miss[1] = false) {
-                            ytemp = y;
-                        }
-
-                    }
-
+                }else {
+                    getAttack();
                 }
 
-                //Checks to make sure spot has not been guessed yet and commits
-                if (miss[0] == true && miss [1] == true && miss [2] == true){
+            }else if (miss[0] == false && miss [1] == false && miss [2] == true){
 
-                    check = myMap.checkSunkenShip(xtemp, y) != null;
+                j = xtemp + "," + y;
 
-                    j = xtemp + "," + y;
-                
-                    if (filledGrids.indexOf(j) == -1) {
-                        filledGrids.add(j);
+                if (filledGrids.indexOf(j) == -1) {
+                    filledGrids.add(j);
 
-                        hit = myMap.hit(xtemp,y);
+                    return new int [] {x,y};
 
-                        return new int [] {x,y};
-
-                    }else {
-                        getAttack();
-                    }
-                    
-                }else if (miss[0] == false && miss [1] == true && miss [2] == true){
-                    
-                    j = x + "," + ytemp;
-                
-                    if (filledGrids.indexOf(j) == -1) {
-                        filledGrids.add(j);
-
-                        hit = myMap.hit(x,ytemp);
-
-                        return new int [] {x,y};
-
-                    }else {
-                        getAttack();
-                    }
-                    
-                }else if (miss[0] == false && miss [1] == false && miss [2] == true){
-                    
-                    j = xtemp + "," + y;
-                
-                    if (filledGrids.indexOf(j) == -1) {
-                        filledGrids.add(j);
-
-                        hit = myMap.hit(xtemp,y);
-
-                        return new int [] {x,y};
-
-                    }else {
-                        getAttack();
-                    }
-                    
-                }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-                    
-                    j = x + "," + ytemp;
-                
-                    if (filledGrids.indexOf(j) == -1) {
-                        filledGrids.add(j);
-
-                        hit = myMap.hit(x,ytemp); 
-
-                        return new int [] {x,y};
-
-                    }else {
-                        getAttack();
-                    }
-
+                }else {
+                    getAttack();
                 }
 
-                if (shipsSunk[0] == false && game.isPlayerShipSunk(ShipType.CARRIER)){
+            }else if (miss[0] == false && miss [1] == false && miss [2] == false){
 
-                    shipsSunk[0] = true;
-                    
-                    hit = false;
-                    
-                }else if (shipsSunk[1] == false && game.isPlayerShipSunk(ShipType.BATTLESHIP)){
-                    shipsSunk[1] = true;
-                    
-                    hit = false;
-                }else if (shipsSunk[2] == false && game.isPlayerShipSunk(ShipType.SUBMARINE)){
-                    shipsSunk[2] = true;
+                j = x + "," + ytemp;
 
-                    hit = false;
-                }else if (shipsSunk[3] == false && game.isPlayerShipSunk(ShipType.CRUISER)){
-                    shipsSunk[3] = true;
+                if (filledGrids.indexOf(j) == -1) {
+                    filledGrids.add(j);
 
-                    hit = false;
-                }else if (shipsSunk[4] == false && game.isPlayerShipSunk(ShipType.DESTROYER)){
-                    shipsSunk[4] = true;
+                    return new int [] {x,y};
 
-                    hit = false;
+                }else {
+                    getAttack();
                 }
-                    
+
             }
+
+            if (shipsSunk[0] == false && game.isPlayerShipSunk(ShipType.CARRIER)){
+
+                shipsSunk[0] = true;
+
+                hit = false;
+
+            }else if (shipsSunk[1] == false && game.isPlayerShipSunk(ShipType.BATTLESHIP)){
+                shipsSunk[1] = true;
+
+                hit = false;
+            }else if (shipsSunk[2] == false && game.isPlayerShipSunk(ShipType.SUBMARINE)){
+                shipsSunk[2] = true;
+
+                hit = false;
+            }else if (shipsSunk[3] == false && game.isPlayerShipSunk(ShipType.CRUISER)){
+                shipsSunk[3] = true;
+
+                hit = false;
+            }else if (shipsSunk[4] == false && game.isPlayerShipSunk(ShipType.DESTROYER)){
+                shipsSunk[4] = true;
+
+                hit = false;
+            }
+
+        }
 
 
         return new int [] {x,y};

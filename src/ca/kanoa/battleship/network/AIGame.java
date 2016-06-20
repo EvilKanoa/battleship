@@ -21,14 +21,14 @@ public class AIGame implements NetworkGame {
     public AIGame(BaseServer server, ClientHandler player) {
         this.stage = NetworkGameStage.NO_ONE_READY;
         this.server = server;
-        this.attackTimer = new Timer(6000);
+        this.attackTimer = new Timer(4500);
         this.attacking = false;
         this.turns = 0;
         this.playerShipsSunk = new boolean[]{false, false, false, false, false};
         this.aiShipsSunk = new boolean[]{false, false, false, false, false};
         this.player = player;
         try {
-            this.ai = new AI();
+            this.ai = new AI(this);
         } catch (SlickException e) {
             e.printStackTrace();
         }
@@ -67,7 +67,9 @@ public class AIGame implements NetworkGame {
     }
 
     @Override
-    public void attackResponse(ClientHandler responder, ResultPacket packet) { }
+    public void attackResponse(ClientHandler responder, ResultPacket packet) {
+        ai.result(packet.getX(), packet.getY(), packet.isHit());
+    }
 
     @Override
     public void attack(ClientHandler attacker, AttackPacket packet) {
