@@ -74,8 +74,10 @@ public class AIGame implements NetworkGame {
     @Override
     public void attack(ClientHandler attacker, AttackPacket packet) {
         turns++;
-        Ship sunken = ai.attack(packet.getX(), packet.getY());
-        player.getPacketHandler().sendPacket(new ResultPacket(packet.getX(), packet.getY(), sunken != null));
+        boolean hit = ai.attack(packet.getX(), packet.getY());
+        player.getPacketHandler().sendPacket(new ResultPacket(packet.getX(), packet.getY(), hit));
+
+        Ship sunken = ai.getSunkenShip(packet.getX(), packet.getY());
         if (sunken != null) {
             aiShipsSunk[sunken.getType().getShipID() - 1] = true;
             player.getPacketHandler().sendPacket(new ShipSunkPacket(sunken));

@@ -16,14 +16,12 @@ public class AI {
     boolean win = false;
     boolean[] shipsSunk = {false,false,false,false,false}; //remaining ships is a array which holds whether or not the ships are sunk 0 is carrier, 1 is battleship, 2 is cruiser, 3 is sub and 4 is pt boat
     boolean searching = false;
-    boolean check = false;
     boolean[] miss = {true,true,true,true};
     int x = 0;
     int xtemp = -1;
     long temp = 0;
     int y;
     int ytemp = -1;
-    ArrayList filledGrids = new ArrayList();
     private Map myMap;
     private Map theirMap;
     private AIGame game;
@@ -39,26 +37,67 @@ public class AI {
     /**
      * Gives the AI the option to place its ships into it's internal map
      */
-    public void placeShips() { }
-
-    /**
-     * Gets called when the AI has sunk one of the players ships. Used to update the map
-     * @param theirShip
-     */
-    public void sunkenShip(Ship theirShip) {
-        // shipsSunk[theirShip.getType().getShipID() - 1] = true;
-        miss = new boolean[]{true, true, true, true};
-        xtemp = -1;
-        ytemp = -1;
+    public void placeShips() {
+        /*
+        // static placements
+        myMap.place(new Ship(ShipType.CARRIER, 0, 0, true, false));
+        myMap.place(new Ship(ShipType.BATTLESHIP, 3, 8, false, false));
+        myMap.place(new Ship(ShipType.SUBMARINE, 0, 0, true, false));
+        myMap.place(new Ship(ShipType.CRUISER, 0, 0, true, false));
+        myMap.place(new Ship(ShipType.DESTROYER, 0, 0, true, false));
+        */
+        int attemps=0;
+        // place one of each ship randomly
+        for (int id = 1; id <= 5; id++) {
+            Ship ship;
+            int x;
+            int y;
+            boolean vertical;
+            do {
+                x = (int) Math.round(Math.random() * 9);
+                y = (int) Math.round(Math.random() * 9);
+                vertical = Math.random() > 0.5d;
+                ship = new Ship(ShipType.getShipType(id), x, y, vertical, false);
+                attemps++;
+            } while (myMap.checkCollisions(ship).size() > 0);
+            myMap.place(ship);
+        }
+        server.console(game, "built fleet in " + attemps + " cycles");
     }
 
     /**
      * Gets called for each time a player attacks the AI
      * @param x The x position of the player's attack
      * @param y The y position of the player's attack
-     * @return The ship sunk if a player hit a ship, otherwise null
+     * @return Whether the attack hit a ship or not
      */
-    public Ship attack(int x, int y) { return null; }
+    public boolean attack(int x, int y) {
+        return myMap.hit(x, y);
+    }
+
+    /**
+     * Checks if there is a sunken ship at a location
+     */
+    public Ship getSunkenShip(int x, int y) {
+        return myMap.checkSunkenShip(x, y);
+    }
+
+    /**
+     * Gets called when the AI has sunk one of the players ships. Used to update the map
+     * @param theirShip
+     */
+    public void sunkenShip(Ship theirShip) {
+        shipsSunk[theirShip.getType().getShipID() - 1] = true;
+        theirMap.place(theirShip);
+        searchMode();
+    }
+
+    private void searchMode() {
+        miss = new boolean[]{true, true, true, true};
+        xtemp = -1;
+        ytemp = -1;
+        searching = false;
+    }
 
     public void result(int x, int y, boolean newHit) {
         theirMap.place(new Marker(newHit, x, y));
@@ -78,19 +117,14 @@ public class AI {
      * @return An array of length two with the x and y coordinate
      */
     public int[] getAttack()  {
-
         //creates variables for use in the method
         String j;
         int multiplier = 0;
         int numberOfTiles = 0;
         long tiles;
 
-
         //Makes sure the AI has not hit a ship yet
-        if (searching == false){
-            server.console(game, "searching for ship...");
-
-
+        if (!searching){
             //Checks to see if the Carrier and the Battleship are still in play
             if (!game.isPlayerShipSunk(ShipType.CARRIER) || !game.isPlayerShipSunk(ShipType.BATTLESHIP)){
 
@@ -98,13 +132,13 @@ public class AI {
                 multiplier = 4;
                 numberOfTiles = 20;
 
-            }else if (!game.isPlayerShipSunk(ShipType.CRUISER) || !game.isPlayerShipSunk(ShipType.SUBMARINE)){ //Checks to see if the Cruiser and the Sub are still in play
+            } else if (!game.isPlayerShipSunk(ShipType.CRUISER) || !game.isPlayerShipSunk(ShipType.SUBMARINE)){ //Checks to see if the Cruiser and the Sub are still in play
 
                 //Partitions the shooting to target the Cruiser and the Sub
                 multiplier = 3;
                 numberOfTiles = 33;
 
-            }else if (!game.isPlayerShipSunk(ShipType.DESTROYER)){ //Checks to see if the destroyer is still in play
+            } else if (!game.isPlayerShipSunk(ShipType.DESTROYER)){ //Checks to see if the destroyer is still in play
 
                 //Partitions the shooting to target the Destroyer
                 multiplier = 2;
@@ -148,20 +182,19 @@ public class AI {
             j = Long.toString(temp);
             x = Integer.parseInt(j);
 
-            //Creates co-ordinants
-            j = x + "," + y;
-
             //Makes sure that the co-ordinant has not already been generated
-            if (filledGrids.indexOf(j) == -1) {
-                filledGrids.add(j);
-
-            }else {//Generates new co-ordinant
-                return getAttack();
+            if (theirMap.getMarker(x, y) == null) {
+                theirMap.hit(x, y);
+            } else {//Generates new co-ordinant
+                try {
+                    return getAttack();
+                } catch (StackOverflowError e) {
+                    return new int [] {x,y};
+                }
             }
 
             return new int [] {x,y};
-        } else if (searching == true){
-            server.console(game, "ship found... destroying...");
+        } else {
             //makes sure the point isn't against a wall
             if (miss[0] == false || miss[2] == false || xtemp == -1) {
                 xtemp = x;
@@ -181,7 +214,7 @@ public class AI {
                     ytemp++;
                 }
 
-            }else if (xtemp == 0 && xtemp < 9 && ytemp > 0 && ytemp < 9){//Searches for ship if ship is against a wall
+            } else if (xtemp == 0 && xtemp < 9 && ytemp > 0 && ytemp < 9){//Searches for ship if ship is against a wall
                 miss[0] = false;
                 if (miss[0] == false && miss [1] == true && miss [2] == true){
                     ytemp--;
@@ -269,91 +302,38 @@ public class AI {
             }
 
             //Checks to make sure spot has not been guessed yet and commits
-            if (miss[0] == true && miss [1] == true && miss [2] == true){
-
-                check = myMap.checkSunkenShip(xtemp, y) != null;
-
-                j = xtemp + "," + y;
-
-                if (filledGrids.indexOf(j) == -1) {
-                    filledGrids.add(j);
-
+            if ((miss[0] == true && miss [1] == true && miss [2] == true) ||
+                    (miss[0] == false && miss [1] == false && miss [2] == true)){
+                if (theirMap.getMarker(xtemp, y) == null) {
+                    theirMap.hit(xtemp,y);
                     return new int [] {xtemp,y};
-
                 }else {
-                    getAttack();
+                    try {
+                        return getAttack();
+                    } catch (StackOverflowError e) {
+                        return new int[]{xtemp, ytemp};
+                    }
                 }
 
-            }else if (miss[0] == false && miss [1] == true && miss [2] == true){
-
-                j = x + "," + ytemp;
-
-                if (filledGrids.indexOf(j) == -1) {
-                    filledGrids.add(j);
-
+            } else if ((miss[0] == false && miss [1] == true && miss [2] == true) ||
+                    (miss[0] == false && miss [1] == false && miss [2] == false)){
+                if (theirMap.getMarker(x,ytemp) == null) {
+                    theirMap.hit(x,ytemp);
                     return new int [] {x,ytemp};
 
-                }else {
-                    getAttack();
+                } else {
+                    searchMode();
+                    try {
+                        return getAttack();
+                    } catch (StackOverflowError e) {
+                        return new int [] {xtemp,ytemp};
+                    }
                 }
-
-            }else if (miss[0] == false && miss [1] == false && miss [2] == true){
-
-                j = xtemp + "," + y;
-
-                if (filledGrids.indexOf(j) == -1) {
-                    filledGrids.add(j);
-
-                    return new int [] {xtemp,y};
-
-                }else {
-                    getAttack();
-                }
-
-            }else if (miss[0] == false && miss [1] == false && miss [2] == false){
-
-                j = x + "," + ytemp;
-
-                if (filledGrids.indexOf(j) == -1) {
-                    filledGrids.add(j);
-
-                    return new int [] {x,ytemp};
-
-                }else {
-                    getAttack();
-                }
-
+            } else {
+                searchMode();
+                return new int [] {xtemp,ytemp};
             }
-
-            if (shipsSunk[0] == false && game.isPlayerShipSunk(ShipType.CARRIER)){
-
-                shipsSunk[0] = true;
-
-                searching = false;
-
-            }else if (shipsSunk[1] == false && game.isPlayerShipSunk(ShipType.BATTLESHIP)){
-                shipsSunk[1] = true;
-
-                searching = false;
-            }else if (shipsSunk[2] == false && game.isPlayerShipSunk(ShipType.SUBMARINE)){
-                shipsSunk[2] = true;
-
-                searching = false;
-            }else if (shipsSunk[3] == false && game.isPlayerShipSunk(ShipType.CRUISER)){
-                shipsSunk[3] = true;
-
-                searching = false;
-            }else if (shipsSunk[4] == false && game.isPlayerShipSunk(ShipType.DESTROYER)){
-                shipsSunk[4] = true;
-
-                searching = false;
-            }
-
         }
-
-
-        return new int [] {x,y};
-
     }
 
 }
