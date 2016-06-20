@@ -58,7 +58,7 @@ public class AI {
     public int[] getAttack() { return new int[]{/* x */ 0, /* y */ 0}; }
 
     //Creates a method to conrol the AI's shooting
-    public void EnemyShoot(boolean[] remainingShips, boolean [] miss, boolean lose, boolean hit){
+    public int[] getAttack(boolean[] remainingShips, boolean [] miss, boolean lose, boolean hit){
 
         //creates variables for use in the method
         String j;
@@ -73,19 +73,19 @@ public class AI {
             if (hit == false){
 
                 //Checks to see if the Carrier and the Battleship are still in play
-                if (remainingShips[0] == true || remainingShips[1] == true){
+                if (!game.isPlayerShipSunk(ShipType.CARRIER) || !game.isPlayerShipSunk(ShipType.BATTLESHIP)){
 
                     //Partitions the shooting to target the Carrier and the Battleship
                     multiplier = 4;
                     numberOfTiles = 20;
 
-                }else if (remainingShips[2] == true || remainingShips[3] == true){ //Checks to see if the Cruiser and the Sub are still in play
+                }else if (!game.isPlayerShipSunk(ShipType.CRUISER) || !game.isPlayerShipSunk(ShipType.SUBMARINE)){ //Checks to see if the Cruiser and the Sub are still in play
 
                     //Partitions the shooting to target the Cruiser and the Sub
                     multiplier = 3;
                     numberOfTiles = 33;
 
-                }else if (remainingShips[4] == true){ //Checks to see if the destroyer is still in play
+                }else if (!game.isPlayerShipSunk(ShipType.DESTROYER)){ //Checks to see if the destroyer is still in play
 
                     //Partitions the shooting to target the Destroyer
                     multiplier = 2;
@@ -135,9 +135,10 @@ public class AI {
                     hit = myMap.hit(x,y);
 
                 }else {//Generates new co-ordinant
-                    EnemyShoot(remainingShips,miss, lose, hit);
+                    getAttack(remainingShips,miss, lose, hit);
                 }
 
+                return new int [] {x,y};
             } else if (hit == true){
 
 
@@ -379,9 +380,12 @@ public class AI {
                     if (filledGrids.indexOf(j) == -1) {
                         filledGrids.add(j);
 
-                        hit = myMap.hit(xtemp,y); 
+                        hit = myMap.hit(xtemp,y);
+
+                        return new int [] {x,y};
+
                     }else {
-                        EnemyShoot(remainingShips,miss, lose, hit);
+                        getAttack(remainingShips,miss, lose, hit);
                     }
                     
                 }else if (miss[0] == false && miss [1] == true && miss [2] == true){
@@ -391,9 +395,12 @@ public class AI {
                     if (filledGrids.indexOf(j) == -1) {
                         filledGrids.add(j);
 
-                        hit = myMap.hit(x,ytemp); 
+                        hit = myMap.hit(x,ytemp);
+
+                        return new int [] {x,y};
+
                     }else {
-                        EnemyShoot(remainingShips,miss, lose, hit);
+                        getAttack(remainingShips,miss, lose, hit);
                     }
                     
                 }else if (miss[0] == false && miss [1] == false && miss [2] == true){
@@ -403,9 +410,12 @@ public class AI {
                     if (filledGrids.indexOf(j) == -1) {
                         filledGrids.add(j);
 
-                        hit = myMap.hit(xtemp,y); 
+                        hit = myMap.hit(xtemp,y);
+
+                        return new int [] {x,y};
+
                     }else {
-                        EnemyShoot(remainingShips,miss, lose, hit);
+                        getAttack(remainingShips,miss, lose, hit);
                     }
                     
                 }else if (miss[0] == false && miss [1] == false && miss [2] == false){
@@ -416,8 +426,11 @@ public class AI {
                         filledGrids.add(j);
 
                         hit = myMap.hit(x,ytemp); 
+
+                        return new int [] {x,y};
+
                     }else {
-                        EnemyShoot(remainingShips,miss, lose, hit);
+                        getAttack(remainingShips,miss, lose, hit);
                     }
 
                 }
