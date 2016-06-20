@@ -28,8 +28,8 @@ public class AI {
     private AIGame game;
 
     public AI() throws SlickException {
-        myMap = new Map("mymap", null);
-        theirMap = new Map("theirmap", null);
+        myMap = new Map("mymap", null, false);
+        theirMap = new Map("theirmap", null, false);
     }
 
     /**
@@ -438,6 +438,7 @@ public class AI {
             }
 
         }
+        return null;
 
     }
 

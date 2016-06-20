@@ -50,7 +50,7 @@ public class GameState extends BasicGameState implements ButtonListener {
     @Override
     //Imports everything needed to set up the game state
     public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
-        game = new Game(this);
+        game = new Game(this, true);
         background = new Image("img/gameback.tga");
         nextShip = ShipType.getShipType(1);
         backgroundMusic = new Music("aud/background.ogg");
