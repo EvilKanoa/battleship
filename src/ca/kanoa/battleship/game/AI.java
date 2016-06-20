@@ -13,7 +13,7 @@ public class AI {
 
     //Ceates variables for use in the class
     boolean win = false;
-    boolean[] remainingShips = {false,false,false,false,false}; //remaining ships is a array which holds whether or not the ships are sunk 0 is carrier, 1 is battleship, 2 is cruiser, 3 is sub and 4 is pt boat
+    boolean[] shipsSunk = {false,false,false,false,false}; //remaining ships is a array which holds whether or not the ships are sunk 0 is carrier, 1 is battleship, 2 is cruiser, 3 is sub and 4 is pt boat
     boolean hit = false;
     boolean check = false;
     boolean[] miss = {false,false,false,false};
@@ -41,7 +41,9 @@ public class AI {
      * Gets called when the AI has sunk one of the players ships. Used to update the map
      * @param theirShip
      */
-    public void sunkenShip(Ship theirShip) { }
+    public void sunkenShip(Ship theirShip) {
+        shipsSunk[theirShip.getType().getShipID() - 1] = true;
+    }
 
     /**
      * Gets called for each time a player attacks the AI
@@ -55,10 +57,7 @@ public class AI {
      * Causes the AI to determine where its next attack will be
      * @return An array of length two with the x and y coordinate
      */
-    public int[] getAttack() { return new int[]{/* x */ 0, /* y */ 0}; }
-
-    //Creates a method to conrol the AI's shooting
-    public int[] getAttack(boolean[] remainingShips, boolean [] miss, boolean lose, boolean hit){
+    public int[] getAttack()  {
 
         //creates variables for use in the method
         String j;
@@ -66,8 +65,6 @@ public class AI {
         int numberOfTiles = 0;
         long tiles;
 
-        //Checks if the game is over
-        if (lose == false){
 
             //Makes sure the AI has not hit a ship yet
             if (hit == false){
@@ -90,11 +87,6 @@ public class AI {
                     //Partitions the shooting to target the Destroyer
                     multiplier = 2;
                     numberOfTiles = 50;
-
-                }else{
-
-                    //Ends the game if all ships are hit
-                    lose= true;
 
                 }
 
@@ -135,7 +127,7 @@ public class AI {
                     hit = myMap.hit(x,y);
 
                 }else {//Generates new co-ordinant
-                    getAttack(remainingShips,miss, lose, hit);
+                    getAttack();
                 }
 
                 return new int [] {x,y};
@@ -385,7 +377,7 @@ public class AI {
                         return new int [] {x,y};
 
                     }else {
-                        getAttack(remainingShips,miss, lose, hit);
+                        getAttack();
                     }
                     
                 }else if (miss[0] == false && miss [1] == true && miss [2] == true){
@@ -400,7 +392,7 @@ public class AI {
                         return new int [] {x,y};
 
                     }else {
-                        getAttack(remainingShips,miss, lose, hit);
+                        getAttack();
                     }
                     
                 }else if (miss[0] == false && miss [1] == false && miss [2] == true){
@@ -415,7 +407,7 @@ public class AI {
                         return new int [] {x,y};
 
                     }else {
-                        getAttack(remainingShips,miss, lose, hit);
+                        getAttack();
                     }
                     
                 }else if (miss[0] == false && miss [1] == false && miss [2] == false){
@@ -430,15 +422,39 @@ public class AI {
                         return new int [] {x,y};
 
                     }else {
-                        getAttack(remainingShips,miss, lose, hit);
+                        getAttack();
                     }
 
                 }
 
+                if (shipsSunk[0] == false && game.isPlayerShipSunk(ShipType.CARRIER)){
+
+                    shipsSunk[0] = true;
+                    
+                    hit = false;
+                    
+                }else if (shipsSunk[1] == false && game.isPlayerShipSunk(ShipType.BATTLESHIP)){
+                    shipsSunk[1] = true;
+                    
+                    hit = false;
+                }else if (shipsSunk[2] == false && game.isPlayerShipSunk(ShipType.SUBMARINE)){
+                    shipsSunk[2] = true;
+
+                    hit = false;
+                }else if (shipsSunk[3] == false && game.isPlayerShipSunk(ShipType.CRUISER)){
+                    shipsSunk[3] = true;
+
+                    hit = false;
+                }else if (shipsSunk[4] == false && game.isPlayerShipSunk(ShipType.DESTROYER)){
+                    shipsSunk[4] = true;
+
+                    hit = false;
+                }
+                    
             }
 
-        }
-        return null;
+
+        return new int [] {x,y};
 
     }
 
