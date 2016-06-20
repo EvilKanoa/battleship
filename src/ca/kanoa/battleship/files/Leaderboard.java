@@ -73,7 +73,7 @@ public class Leaderboard {
     /**
      * Used to sort a list of leaderboard entries based on score and then name
      */
-    private LeaderboardEntry[] sort(List<LeaderboardEntry> unsorted) {
+    public static LeaderboardEntry[] sort(List<LeaderboardEntry> unsorted) {
         LeaderboardEntry[] sorted = unsorted.toArray(new LeaderboardEntry[0]);
 
         // sort the leaderboard using insertion sort

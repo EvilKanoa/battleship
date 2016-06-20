@@ -3,7 +3,8 @@ package ca.kanoa.battleship.network.packet;
 import ca.kanoa.battleship.Config;
 import ca.kanoa.battleship.files.Leaderboard;
 import ca.kanoa.battleship.files.LeaderboardEntry;
-import org.lwjgl.Sys;
+
+import java.util.Arrays;
 
 public class LeaderboardPacket extends Packet {
 
@@ -16,12 +17,17 @@ public class LeaderboardPacket extends Packet {
     }
 
     public LeaderboardPacket(LeaderboardEntry[] leaderboard) {
-        this.leaderboard = leaderboard;
+        if (leaderboard.length <= 10) {
+            this.leaderboard = leaderboard;
+        } else {
+            this.leaderboard = Arrays.copyOfRange(leaderboard, 0, 10);
+        }
+        this.leaderboard = Leaderboard.sort(Arrays.asList(this.leaderboard));
     }
 
     @Override
     public byte getID() {
-        return Config.PACKET_LEADERBOARD;
+        return Config.PACKET_LEADERBOARD_ID;
     }
 
     @Override
