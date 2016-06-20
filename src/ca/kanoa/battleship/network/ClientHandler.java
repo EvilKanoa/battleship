@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 
+//Creates a class to handle the clients
 public class ClientHandler extends Thread {
 
+    //creates variables for use in the program
     private BaseServer server;
     private Socket socket;
     private String username;
@@ -17,6 +19,7 @@ public class ClientHandler extends Thread {
     private boolean connected;
     private NetworkGame activeGame;
 
+    //Creaes a method to hande to clients
     public ClientHandler(Socket socket, BaseServer server) throws IOException {
         this.server = server;
         this.socket = socket;
@@ -27,6 +30,7 @@ public class ClientHandler extends Thread {
     }
 
     @Override
+    //runs the clients
     public void run() {
         while (connected) {
             loop();
@@ -101,26 +105,32 @@ public class ClientHandler extends Thread {
         packetHandler.update();
     }
 
+    //makes sure the client is still online
     public synchronized boolean online() {
         return server.getClients().contains(this);
     }
 
+    //handles the packet
     public synchronized PacketHandler getPacketHandler() {
         return packetHandler;
     }
 
+    //Gets the socket
     public Socket getSocket() {
         return socket;
     }
 
+    //gets the username
     public String getUsername() {
         return username;
     }
 
+    //chacks for an active game
     public NetworkGame getActiveGame() {
         return activeGame;
     }
 
+    //sets  the game as active
     public void setActiveGame(NetworkGame activeGame) {
         this.activeGame = activeGame;
     }

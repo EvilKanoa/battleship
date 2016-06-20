@@ -15,8 +15,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+//creates a class to handle the packets
 public class PacketHandler {
 
+    //creates variables for use in the program
     protected final DataInputStream input;
     protected final DataOutputStream output;
     private final List<Packet> incomingPackets;
@@ -25,6 +27,7 @@ public class PacketHandler {
     private final Timer recieveTimeout;
     private boolean connected;
 
+    //handles the packets
     public PacketHandler(Socket socket, long timeout) throws IOException {
         this.input = new DataInputStream(socket.getInputStream());
         this.output = new DataOutputStream(socket.getOutputStream());

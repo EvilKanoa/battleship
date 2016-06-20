@@ -8,13 +8,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
+//Sets up the base server
 public class BaseServer {
 
+    //Crates variables for use in the program
     private ServerSocket serverSocket;
     private Set<ClientHandler> clients;
     private List<GameRequest> requests;
     private List<NetworkGame> games;
 
+    //Sets up the base server
     public BaseServer() throws IOException {
         console("Starting server...");
         console("Initiating network...");
@@ -25,6 +28,7 @@ public class BaseServer {
         games = Collections.synchronizedList(new ArrayList<NetworkGame>());
     }
 
+    //Starts up the server
     public void loop() throws IOException {
         console("Server started");
         while(true) {
@@ -37,6 +41,7 @@ public class BaseServer {
         }
     }
 
+    //Updates the server when a person connects
     private void update() throws IOException {
         Socket socket = serverSocket.accept();
         ClientHandler newClient = new ClientHandler(socket, this);
@@ -68,6 +73,7 @@ public class BaseServer {
         }
     }
 
+    //Starts a game on the server
     public synchronized void startGame(ClientHandler playerOne, ClientHandler playerTwo) {
         if (playerActive(playerOne) || playerActive(playerTwo) || !playerOne.online() || !playerTwo.online()) {
             return;
@@ -85,6 +91,7 @@ public class BaseServer {
         }
     }
 
+    //Syncronizes the players
     public synchronized List<String> getPlayers() {
         List<String> players = new LinkedList<String>();
         for (ClientHandler client : clients) {
@@ -93,10 +100,12 @@ public class BaseServer {
         return players;
     }
 
+    //Handles the clients
     public synchronized Set<ClientHandler> getClients() {
         return clients;
     }
 
+    //Gets active players
     public synchronized boolean playerActive(ClientHandler player) {
         for (NetworkGame game : games) {
             if (game.playerParticipating(player)) {
@@ -106,14 +115,17 @@ public class BaseServer {
         return false;
     }
 
+    //Sets up the network game
     public synchronized NetworkGame getGame(ClientHandler player) {
         return player.getActiveGame();
     }
 
+    //Lists the game requests
     public synchronized List<GameRequest> getGameRequests() {
         return requests;
     }
 
+    //Gets the clients of the players
     public synchronized ClientHandler getClient(String username) {
         for (ClientHandler handler : clients) {
             if (handler.getUsername().equalsIgnoreCase(username)) {
@@ -123,22 +135,27 @@ public class BaseServer {
         return null;
     }
 
+    //Creates a console to handle the game
     public void console(String source, String message) {
         System.out.printf("%s -> %s\n", source, message);
     }
 
+    //uses the console to send messages
     public void console(String message) {
         console("server", message);
     }
 
+    //Uses the console to handle usernames
     public void console(ClientHandler source, String message) {
         console(source.getUsername(), message);
     }
 
+    //Uses the console to set up the network game
     public void console(NetworkGame source, String message) {
         console(source.toString(), message);
     }
 
+    //Removes a player at the end of a game
     protected void removeClient(ClientHandler client) {
         clients.remove(client);
     }

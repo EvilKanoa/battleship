@@ -7,12 +7,14 @@ import ca.kanoa.battleship.game.ShipType;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+//Creates a class to create a packet
 public abstract class Packet {
 
-    public abstract byte getID();
+    public abstract byte getID();//gets the packet ID
 
-    public abstract byte[] toData();
+    public abstract byte[] toData();//Converts the packet from bytes to data
 
+    //readsd the packet
     public static Packet read(byte[] data) {
         switch (data[0]) {
             case Config.PACKET_KEEP_ALIVE_ID:

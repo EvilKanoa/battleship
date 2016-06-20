@@ -12,8 +12,10 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+//Creates a class for the game state
 public class GameState extends BasicGameState implements ButtonListener {
 
+    //Creates variables for use in the program
     private Battleship battleship;
     private String opponent;
     private Game game;
@@ -30,6 +32,7 @@ public class GameState extends BasicGameState implements ButtonListener {
     private String status;
     private int winner;
 
+    //Sets up the game state
     public GameState(Battleship battleship) {
         this.battleship = battleship;
         this.attacked = false;
@@ -40,11 +43,12 @@ public class GameState extends BasicGameState implements ButtonListener {
     }
 
     @Override
-    public int getID() {
+    public int getID() {//gets game screen ID
         return Config.SCREEN_GAME;
     }
 
     @Override
+    //Imports everything needed to set up the game state
     public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
         game = new Game(this);
         background = new Image("img/gameback.tga");
@@ -57,6 +61,7 @@ public class GameState extends BasicGameState implements ButtonListener {
     }
 
     @Override
+    //renders the game state
     public void render(GameContainer gameContainer, StateBasedGame stateBasedGame, Graphics graphics)
             throws SlickException {
         background.draw(0, 0, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
@@ -83,6 +88,7 @@ public class GameState extends BasicGameState implements ButtonListener {
     }
 
     @Override
+    //updates the screen of the game state
     public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int i) throws SlickException {
         if (!backgroundMusic.playing()) {
             backgroundMusic.loop();
@@ -145,26 +151,32 @@ public class GameState extends BasicGameState implements ButtonListener {
         }
     }
 
+    //draws the center pf the indow
     private void drawCenterString(Graphics g, String s, float height) {
         g.drawString(s, (Config.WINDOW_WIDTH / 2) - (g.getFont().getWidth(s) / 2), height);
     }
 
+    //Sets the winner of the game
     public void setWinner(int winner) {
         this.winner = winner;
     }
 
+    //Gets the opponent of the player
     public String getOpponent() {
         return opponent;
     }
 
+    //Sets the opponent of the player
     public void setOpponent(String opponent) {
         this.opponent = opponent;
     }
 
+    //gets a game for the player toplay in
     public Game getGame() {
         return game;
     }
 
+    //Gets the result of the attack and tells the player
     public void attackResult(int x, int y, boolean result) {
         game.getTheirMap().place(new Marker(result, x, y));
         if (result && status.equals("Firing!")) {
@@ -176,11 +188,13 @@ public class GameState extends BasicGameState implements ButtonListener {
         switchTimer.reset();
     }
 
+    //Gets the sunken ship and tells the player
     public void sunkShip(Ship ship) {
         game.getTheirMap().place(ship);
         status = "You sunk " + opponent + "'s " + ship.getType().getName();
     }
 
+    //Gets the attack
     public boolean attack(int x, int y) {
         boolean hit = game.attack(x, y);
 
@@ -190,6 +204,7 @@ public class GameState extends BasicGameState implements ButtonListener {
     }
 
     @Override
+    //Finds the cell that was clicked by the player
     public void buttonPressed(String button, int mouseX, int mouseY) {
         if (buttonProtect.check()) {
             if (button.startsWith("theirmap:cell:") && game.myTurn() && !attacked) {
