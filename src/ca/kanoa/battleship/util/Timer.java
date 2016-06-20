@@ -24,15 +24,15 @@ public class Timer {
         reset();
     }
 
-    public void reset() {
+    public void reset() {//resets the timer
         stopwatchStart = System.currentTimeMillis();
     }
 
-    public long elapsed() {
+    public long elapsed() {//counts elepsed tiime
         return System.currentTimeMillis() - stopwatchStart;
     }
 
-    public boolean check() {
+    public boolean check() {//checks the timer
         return elapsed() >= delay;
     }
 

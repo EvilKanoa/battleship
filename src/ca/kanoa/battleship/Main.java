@@ -1,5 +1,6 @@
 package ca.kanoa.battleship;
 
+//imports the data from the other files
 import ca.kanoa.battleship.input.Button;
 import ca.kanoa.battleship.network.BaseServer;
 import org.newdawn.slick.AppGameContainer;

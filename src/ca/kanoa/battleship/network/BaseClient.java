@@ -15,8 +15,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+//Creates program to set up the base client
 public class BaseClient extends Thread {
 
+    //Creates variables for use in the program
     private String serverAddress;
     private Battleship battleship;
     private Socket socket;
@@ -30,6 +32,7 @@ public class BaseClient extends Thread {
     private List<String> onlinePlayers;
     private List<String> requests;
 
+    //Creates tje base client
     public BaseClient(String serverAddress, Battleship owner) {
         this.serverAddress = serverAddress;
         this.onlinePlayers = new ArrayList<String>();
@@ -39,6 +42,7 @@ public class BaseClient extends Thread {
         this.attackResend = new Timer(500);
     }
 
+    //Connects the base client to the player
     public boolean connect(String username) {
         try {
             socket = new Socket(serverAddress, Config.NETWORK_PORT);
@@ -54,6 +58,7 @@ public class BaseClient extends Thread {
         }
     }
 
+    //Updates the user on the status of the server and connects the user to the server
     private void update() {
         packetHandler.update();
 
@@ -130,6 +135,7 @@ public class BaseClient extends Thread {
         }
     }
 
+    //Runs the server
     @Override
     public void run() {
         while (connected) {
@@ -142,36 +148,44 @@ public class BaseClient extends Thread {
         }
     }
 
+    //Gets the online players
     public List<String> getOnlinePlayers() {
         return onlinePlayers;
     }
 
+    //gets the game requests
     public List<String> getGameRequests() {
         return requests;
     }
 
+    //refeses the list of players
     public void refreshPlayers() {
         packetHandler.sendPacket(new ListPlayersPacket());
     }
 
+    //requests a game against another player
     public void requestGame(String opponent) {
         packetHandler.sendPacket(new GameRequestPacket(opponent));
     }
 
+    //Sends attacks to the other player
     public void attack(int x, int y) {
         activeAttack = new AttackPacket(x, y);
         attackResend.reset();
         packetHandler.sendPacket(activeAttack);
     }
 
+    //sends sunk ships to other player
     public void shipSunk(Ship ship) {
         packetHandler.sendPacket(new ShipSunkPacket(ship));
     }
 
+    //Sends the users packets
     public void readyUp() {
         packetHandler.sendPacket(new ReadyPacket());
     }
 
+    //gets the opponents username
     public String getUsername() {
         return username;
     }

@@ -18,8 +18,10 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
+//Creates class to control the lobby state
 public class LobbyState extends BasicGameState implements ButtonListener {
 
+    //creates variables for use in the program
     private Battleship battleship;
     private Image background;
     private String username;
@@ -35,16 +37,18 @@ public class LobbyState extends BasicGameState implements ButtonListener {
     private List<RequestButton> requestButtons;
     private Timer updateTimer;
 
+    //sets the lobby state
     public LobbyState(Battleship battleship) {
         this.battleship = battleship;
     }
 
     @Override
-    public int getID() {
+    public int getID() { //gets the ID of the lobby state
         return Config.SCREEN_LOBBY;
     }
 
     @Override
+    //Gets pictures and sounds for lobby state
     public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
         background = new Image("img/lobby.tga");
         requestButtonMain = new Image("img/button/request.tga");
@@ -71,6 +75,7 @@ public class LobbyState extends BasicGameState implements ButtonListener {
     }
 
     @Override
+    //renders the lobby state
     public void render(GameContainer gameContainer, StateBasedGame stateBasedGame, Graphics graphics)
             throws SlickException {
         background.draw(0, 0, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT);
@@ -84,6 +89,7 @@ public class LobbyState extends BasicGameState implements ButtonListener {
     }
 
     @Override
+    //Updates the screen of the lobby state
     public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int delta) throws SlickException {
         username = battleship.getNetwork().getUsername();
         exitButton.update();
@@ -114,6 +120,7 @@ public class LobbyState extends BasicGameState implements ButtonListener {
     }
 
     @Override
+    //Controls what happens when a button is pressed
     public void buttonPressed(String button, int mouseX, int mouseY) {
         if (button.equals("exit")) {
             System.exit(0);

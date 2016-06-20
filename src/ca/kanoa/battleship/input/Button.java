@@ -7,8 +7,10 @@ import org.newdawn.slick.*;
 import java.util.HashSet;
 import java.util.Set;
 
+//Creates class for creating buttons
 public class Button {
 
+    //Creates variables for use in the program
     private Set<ButtonListener> listeners;
     protected String id;
     protected Image main, hover;
@@ -19,6 +21,7 @@ public class Button {
     private boolean wasPressed;
     private boolean resize;
 
+    //creates the button
     public Button(String buttonID, Image main, Image hover, float x, float y, float width, float height, Sound sound) {
         this.id = buttonID;
         this.main = main;
@@ -35,33 +38,40 @@ public class Button {
         enable();
     }
 
+    //makes a soundless button
     public Button(String buttonID, Image main, Image hover, float x, float y) {
         this(buttonID, main, hover, x, y, null);
         this.resize = false;
     }
 
+    //makes a button eith sound
     public Button(String buttonID, Image main, Image hover, float x, float y, Sound sound) {
         this(buttonID, main, hover, x, y, main.getWidth(), main.getHeight(), sound);
         this.resize = false;
     }
 
+    //makes a resizeable button
     public Button(String buttonID, Image main, Image hover, float x, float y, float width, float height) {
         this(buttonID, main, hover, x, y, width, height, null);
         this.resize = true;
     }
 
+    //checks whether on not the button is currently enabled
     public void enable() {
         this.enable = true;
     }
 
+    //checks whether on not the button is currently disabled
     public void disable() {
         this.enable = false;
     }
 
+    //gets the button ID
     public String getId() {
         return id;
     }
 
+    //renders the button
     public void render() {
         if (enable && mouseOver) {
             hover.draw(x, y, resize ? width : hover.getWidth(), resize ? height : hover.getHeight());
@@ -70,14 +80,17 @@ public class Button {
         }
     }
 
+    //Listens for the button being pushed
     public void addListener(ButtonListener listener) {
         listeners.add(listener);
     }
 
+    //Stops listening for the button being pushed
     public boolean removeListener(ButtonListener listener) {
         return listeners.remove(listener);
     }
 
+    //Updates the postion of the button
     public void update() {
         int xPos = Mouse.getX();
         int yPos = Config.WINDOW_HEIGHT - Mouse.getY();
