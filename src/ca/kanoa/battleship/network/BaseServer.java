@@ -1,6 +1,7 @@
 package ca.kanoa.battleship.network;
 
 import ca.kanoa.battleship.Config;
+import ca.kanoa.battleship.files.Leaderboard;
 import org.newdawn.slick.SlickException;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ public class BaseServer {
     private Set<ClientHandler> clients;
     private List<GameRequest> requests;
     private List<NetworkGame> games;
+    private Leaderboard leaderboard;
 
     //Sets up the base server
     public BaseServer() throws IOException {
@@ -26,11 +28,13 @@ public class BaseServer {
         clients = new HashSet<ClientHandler>();
         requests = Collections.synchronizedList(new LinkedList<GameRequest>());
         games = Collections.synchronizedList(new ArrayList<NetworkGame>());
+        leaderboard = new Leaderboard("leaderboard.dat");
     }
 
     //Starts up the server
     public void loop() throws IOException {
         console("Server started");
+        leaderboard.read();
         while(true) {
             update();
             try {
@@ -71,6 +75,9 @@ public class BaseServer {
                 iterator.remove();
             }
         }
+
+        // save the current leaderboard
+        leaderboard.write();
     }
 
     //Starts a game on the server
@@ -94,6 +101,14 @@ public class BaseServer {
     //Starts a game vs the AI on the server
     public synchronized void startAIGame(ClientHandler player) {
         // TODO: Start a game vs the AI
+        if (playerActive(player) || !player.online()) {
+            return;
+        }
+
+        NetworkGame newGame = new AIGame(this, player);
+        player.setActiveGame(newGame);
+        games.add(newGame);
+        newGame.startGame();
     }
 
     //Syncronizes the players
@@ -123,6 +138,10 @@ public class BaseServer {
     //Sets up the network game
     public synchronized NetworkGame getGame(ClientHandler player) {
         return player.getActiveGame();
+    }
+
+    public synchronized Leaderboard getLeaderboard() {
+        return leaderboard;
     }
 
     //Lists the game requests

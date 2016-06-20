@@ -45,15 +45,15 @@ public class Leaderboard {
     /**
      * Adds an entry to the leaderboard
      */
-    public void addEntry(LeaderboardEntry entry) {
+    public synchronized void addEntry(LeaderboardEntry entry) {
         entries.add(entry);
     }
 
     /**
      * Adds an entry to the leaderboard
      */
-    public void add(String name, int score) {
-        entries.add(new LeaderboardEntry(name, score));
+    public synchronized void add(String name, int score) {
+        addEntry(new LeaderboardEntry(name, score));
     }
 
     /**

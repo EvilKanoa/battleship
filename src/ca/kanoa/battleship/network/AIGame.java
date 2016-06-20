@@ -17,7 +17,7 @@ public class AIGame implements NetworkGame {
     private boolean[] playerShipsSunk, aiShipsSunk;
     private int turns;
 
-    public AIGame(BaseServer server) {
+    public AIGame(BaseServer server, ClientHandler player) {
         this.stage = NetworkGameStage.NO_ONE_READY;
         this.server = server;
         this.attackTimer = new Timer(6000);
@@ -25,6 +25,7 @@ public class AIGame implements NetworkGame {
         this.turns = 0;
         this.playerShipsSunk = new boolean[]{false, false, false, false, false};
         this.aiShipsSunk = new boolean[]{false, false, false, false, false};
+        this.player = player;
     }
 
     @Override
@@ -45,6 +46,7 @@ public class AIGame implements NetworkGame {
         stage = NetworkGameStage.IN_GAME;
         server.console(this, "initiating game");
         player.getPacketHandler().sendPacket(new PlayerOnePacket());
+        ai.placeShips();
     }
 
     @Override
@@ -54,7 +56,7 @@ public class AIGame implements NetworkGame {
 
         if (howManySunk(playerShipsSunk) >= 5) {
             server.console(this, "game won by the AI");
-            // TODO: Send a leaderboard packet and log to leaderboard
+            gameOver(false);
         }
     }
 
@@ -72,11 +74,17 @@ public class AIGame implements NetworkGame {
 
             if (howManySunk(aiShipsSunk) >= 5) {
                 server.console(this, "game won by " + player.getUsername());
-                // TODO: Send a leaderboard packet and log
+                gameOver(true);
             }
         }
         attacking = true;
         attackTimer.reset();
+    }
+
+    private void gameOver(boolean won) {
+        server.getLeaderboard().add(player.getUsername(), turns);
+        player.getPacketHandler().sendPacket(new GameWonPacket(won ? 1 : 2));
+        player.getPacketHandler().sendPacket(new LeaderboardPacket(server.getLeaderboard()));
     }
 
     //determines how many ships have been sunk

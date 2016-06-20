@@ -108,7 +108,7 @@ public class ClientHandler extends Thread {
         // update components
         packetHandler.update();
         if (activeGame != null) {
-            activeGame.update();;
+            activeGame.update();
         }
     }
 
