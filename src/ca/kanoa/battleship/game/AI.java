@@ -369,7 +369,7 @@ public class AI {
 
                 }
 
-                //Checks to make sure spot has not been guessed yet
+                //Checks to make sure spot has not been guessed yet and commits
                 if (miss[0] == true && miss [1] == true && miss [2] == true){
 
                     check = myMap.checkSunkenShip(xtemp, y) != null;
