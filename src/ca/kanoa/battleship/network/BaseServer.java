@@ -81,7 +81,7 @@ public class BaseServer {
 
         NetworkGame newGame = null;
         try {
-            newGame = new NetworkGame(playerOne, playerTwo, this);
+            newGame = new MultiplayerGame(playerOne, playerTwo, this);
             playerOne.setActiveGame(newGame);
             playerTwo.setActiveGame(newGame);
             games.add(newGame);
@@ -89,6 +89,11 @@ public class BaseServer {
         } catch (SlickException e) {
             e.printStackTrace();
         }
+    }
+
+    //Starts a game vs the AI on the server
+    public synchronized void startAIGame(ClientHandler player) {
+        // TODO: Start a game vs the AI
     }
 
     //Syncronizes the players

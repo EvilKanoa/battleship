@@ -100,13 +100,7 @@ public class ClientHandler extends Thread {
                     getActiveGame().attackResponse(this, (ResultPacket) packet);
                     return;
                 case Config.PACKET_AI_REQUEST_ID:
-                    // TODO: Begin an AI game
-                    LeaderboardEntry[] leaderboard = {new LeaderboardEntry("Kanoa", 5), new LeaderboardEntry("Bob", 6),
-                            new LeaderboardEntry("Jack", 10), new LeaderboardEntry("Phill", 125), new LeaderboardEntry("Phill1", 121),
-                            new LeaderboardEntry("Phil2l", 1), new LeaderboardEntry("Phil3l", 7), new LeaderboardEntry("Phi4ll", 6),
-                            new LeaderboardEntry("Phi5ll", 125), new LeaderboardEntry("Phil6l", 0),
-                            new LeaderboardEntry("Phiasdll", 10)};
-                    packetHandler.sendPacket(new LeaderboardPacket(leaderboard));
+                    server.startAIGame(this);
                     return;
             }
         }
