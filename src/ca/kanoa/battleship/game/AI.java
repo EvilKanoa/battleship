@@ -1,6 +1,7 @@
 package ca.kanoa.battleship.game;
 
 import ca.kanoa.battleship.network.AIGame;
+import ca.kanoa.battleship.network.BaseServer;
 import org.newdawn.slick.SlickException;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class AI {
     //Creates variables for use in the class
     boolean win = false;
     boolean[] shipsSunk = {false,false,false,false,false}; //remaining ships is a array which holds whether or not the ships are sunk 0 is carrier, 1 is battleship, 2 is cruiser, 3 is sub and 4 is pt boat
-    boolean hit = false;
+    boolean searching = false;
     boolean check = false;
     boolean[] miss = {true,true,true,true};
     int x = 0;
@@ -26,11 +27,13 @@ public class AI {
     private Map myMap;
     private Map theirMap;
     private AIGame game;
+    private BaseServer server;
 
-    public AI(AIGame game) throws SlickException {
+    public AI(AIGame game, BaseServer server) throws SlickException {
         myMap = new Map("mymap", null, false);
         theirMap = new Map("theirmap", null, false);
         this.game = game;
+        this.server = server;
     }
 
     /**
@@ -58,15 +61,16 @@ public class AI {
     public Ship attack(int x, int y) { return null; }
 
     public void result(int x, int y, boolean newHit) {
-        boolean lastHit = this.hit;
-        theirMap.place(new Marker(hit, x, y));
-        if (lastHit && !newHit) {
+        theirMap.place(new Marker(newHit, x, y));
+        if (searching && !newHit) {
             if (miss[0]) miss[0] = false;
             else if (miss[1]) miss[1] = false;
             else if (miss[2]) miss[2] = false;
             else if (miss[3]) miss[3] = false;
         }
-        this.hit = newHit;
+        if (newHit) {
+            searching = true;
+        }
     }
 
     /**
@@ -83,7 +87,9 @@ public class AI {
 
 
         //Makes sure the AI has not hit a ship yet
-        if (hit == false){
+        if (searching == false){
+            server.console(game, "searching for ship...");
+
 
             //Checks to see if the Carrier and the Battleship are still in play
             if (!game.isPlayerShipSunk(ShipType.CARRIER) || !game.isPlayerShipSunk(ShipType.BATTLESHIP)){
@@ -154,7 +160,8 @@ public class AI {
             }
 
             return new int [] {x,y};
-        } else if (hit == true){
+        } else if (searching == true){
+            server.console(game, "ship found... destroying...");
             //makes sure the point isn't against a wall
             if (miss[0] == false || miss[2] == false || xtemp == -1) {
                 xtemp = x;
@@ -166,20 +173,12 @@ public class AI {
                 //Searches for the ship and seeks out after it
                 if (miss[0] == true && miss [1] == true && miss [2] == true){
                     xtemp--;
-
-
-
                 }else if (miss[0] == false && miss [1] == true && miss [2] == true){
                     ytemp--;
-
-
-
                 }else if (miss[0] == false && miss [1] == false && miss [2] == true){
                     xtemp++;
-
                 }else if (miss[0] == false && miss [1] == false && miss [2] == false){
                     ytemp++;
-
                 }
 
             }else if (xtemp == 0 && xtemp < 9 && ytemp > 0 && ytemp < 9){//Searches for ship if ship is against a wall
@@ -279,7 +278,7 @@ public class AI {
                 if (filledGrids.indexOf(j) == -1) {
                     filledGrids.add(j);
 
-                    return new int [] {x,y};
+                    return new int [] {xtemp,y};
 
                 }else {
                     getAttack();
@@ -292,7 +291,7 @@ public class AI {
                 if (filledGrids.indexOf(j) == -1) {
                     filledGrids.add(j);
 
-                    return new int [] {x,y};
+                    return new int [] {x,ytemp};
 
                 }else {
                     getAttack();
@@ -305,7 +304,7 @@ public class AI {
                 if (filledGrids.indexOf(j) == -1) {
                     filledGrids.add(j);
 
-                    return new int [] {x,y};
+                    return new int [] {xtemp,y};
 
                 }else {
                     getAttack();
@@ -318,7 +317,7 @@ public class AI {
                 if (filledGrids.indexOf(j) == -1) {
                     filledGrids.add(j);
 
-                    return new int [] {x,y};
+                    return new int [] {x,ytemp};
 
                 }else {
                     getAttack();
@@ -330,24 +329,24 @@ public class AI {
 
                 shipsSunk[0] = true;
 
-                hit = false;
+                searching = false;
 
             }else if (shipsSunk[1] == false && game.isPlayerShipSunk(ShipType.BATTLESHIP)){
                 shipsSunk[1] = true;
 
-                hit = false;
+                searching = false;
             }else if (shipsSunk[2] == false && game.isPlayerShipSunk(ShipType.SUBMARINE)){
                 shipsSunk[2] = true;
 
-                hit = false;
+                searching = false;
             }else if (shipsSunk[3] == false && game.isPlayerShipSunk(ShipType.CRUISER)){
                 shipsSunk[3] = true;
 
-                hit = false;
+                searching = false;
             }else if (shipsSunk[4] == false && game.isPlayerShipSunk(ShipType.DESTROYER)){
                 shipsSunk[4] = true;
 
-                hit = false;
+                searching = false;
             }
 
         }

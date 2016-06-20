@@ -28,7 +28,7 @@ public class AIGame implements NetworkGame {
         this.aiShipsSunk = new boolean[]{false, false, false, false, false};
         this.player = player;
         try {
-            this.ai = new AI(this);
+            this.ai = new AI(this, server);
         } catch (SlickException e) {
             e.printStackTrace();
         }
