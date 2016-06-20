@@ -25,7 +25,7 @@ public class Config {
 
     // network information
     public static final int NETWORK_PORT                = 20001;
-    public static final String GLOBAL_SERVER            = "localhost";
+    public static final String GLOBAL_SERVER            = "99.250.178.197";
     public static final long NETWORK_TIMEOUT            = 5000;
 
     // packet IDs
