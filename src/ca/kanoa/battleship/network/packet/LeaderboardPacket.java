@@ -12,17 +12,17 @@ public class LeaderboardPacket extends Packet {
 
     public LeaderboardPacket(Leaderboard leaderboard) {
         LeaderboardEntry[] allEntries = leaderboard.getEntries();
-        this.leaderboard = new LeaderboardEntry[allEntries.length > 10 ? 10 : allEntries.length];
+        this.leaderboard = new LeaderboardEntry[allEntries.length > 5 ? 5 : allEntries.length];
         System.arraycopy(allEntries, 0, this.leaderboard, 0, this.leaderboard.length);
     }
 
     public LeaderboardPacket(LeaderboardEntry[] leaderboard) {
-        if (leaderboard.length <= 10) {
+        leaderboard = Leaderboard.sort(Arrays.asList(leaderboard));
+        if (leaderboard.length <= 5) {
             this.leaderboard = leaderboard;
         } else {
-            this.leaderboard = Arrays.copyOfRange(leaderboard, 0, 10);
+            this.leaderboard = Arrays.copyOfRange(leaderboard, 0, 5);
         }
-        this.leaderboard = Leaderboard.sort(Arrays.asList(this.leaderboard));
     }
 
     @Override

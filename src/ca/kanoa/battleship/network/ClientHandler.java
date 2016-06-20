@@ -1,6 +1,7 @@
 package ca.kanoa.battleship.network;
 
 import ca.kanoa.battleship.Config;
+import ca.kanoa.battleship.files.LeaderboardEntry;
 import ca.kanoa.battleship.network.packet.*;
 
 import java.io.IOException;
@@ -92,11 +93,20 @@ public class ClientHandler extends Thread {
                 case Config.PACKET_SHIP_SUNK_ID:
                     getActiveGame().sunkenShip(this, (ShipSunkPacket) packet);
                     return;
-                case Config.PACKET_ATTACK:
+                case Config.PACKET_ATTACK_ID:
                     getActiveGame().attack(this, (AttackPacket) packet);
                     return;
-                case Config.PACKET_RESULT:
+                case Config.PACKET_RESULT_ID:
                     getActiveGame().attackResponse(this, (ResultPacket) packet);
+                    return;
+                case Config.PACKET_AI_REQUEST_ID:
+                    // TODO: Begin an AI game
+                    LeaderboardEntry[] leaderboard = {new LeaderboardEntry("Kanoa", 5), new LeaderboardEntry("Bob", 6),
+                            new LeaderboardEntry("Jack", 10), new LeaderboardEntry("Phill", 125), new LeaderboardEntry("Phill1", 121),
+                            new LeaderboardEntry("Phil2l", 1), new LeaderboardEntry("Phil3l", 7), new LeaderboardEntry("Phi4ll", 6),
+                            new LeaderboardEntry("Phi5ll", 125), new LeaderboardEntry("Phil6l", 0),
+                            new LeaderboardEntry("Phiasdll", 10)};
+                    packetHandler.sendPacket(new LeaderboardPacket(leaderboard));
                     return;
             }
         }

@@ -67,6 +67,7 @@ public class LobbyState extends BasicGameState implements ButtonListener {
 
         refreshButton.addListener(this);
         exitButton.addListener(this);
+        aiButton.addListener(this);
 
         onlinePlayers = new ArrayList<String>();
         requestButtons = new ArrayList<RequestButton>();
@@ -126,6 +127,8 @@ public class LobbyState extends BasicGameState implements ButtonListener {
             System.exit(0);
         } else if (button.equals("refresh")) {
             battleship.getNetwork().refreshPlayers();
+        } else if (button.equals("ai")) {
+            battleship.getNetwork().requestAIGame();
         } else if (button.startsWith("request:")) {
             String opponent = button.substring(8);
             battleship.getNetwork().requestGame(opponent);

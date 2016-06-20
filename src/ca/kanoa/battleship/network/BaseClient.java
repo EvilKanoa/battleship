@@ -98,7 +98,7 @@ public class BaseClient extends Thread {
                     ShipSunkPacket sunkPacket = (ShipSunkPacket) packet;
                     battleship.gameState.sunkShip(sunkPacket.getSunkShip());
                     break;
-                case Config.PACKET_ATTACK:
+                case Config.PACKET_ATTACK_ID:
                     AttackPacket attk = (AttackPacket) packet;
                     boolean hit = battleship.gameState.attack(attk.getX(), attk.getY());
                     packetHandler.sendPacket(new ResultPacket(attk.getX(), attk.getY(), hit));
@@ -108,19 +108,19 @@ public class BaseClient extends Thread {
                         packetHandler.sendPacket(new ShipSunkPacket(sunken));
                     }
                     break;
-                case Config.PACKET_RESULT:
+                case Config.PACKET_RESULT_ID:
                     activeAttack = null;
                     ResultPacket res = (ResultPacket) packet;
                     battleship.gameState.attackResult(res.getX(), res.getY(), res.isHit());
                     break;
-                case Config.PACKET_GAME_WON:
+                case Config.PACKET_GAME_WON_ID:
                     GameWonPacket winner = (GameWonPacket) packet;
                     battleship.gameState.setWinner(winner.getWinner());
                     battleship.leaderboardState.setWon(winner.getWinner() ==
                             battleship.gameState.getGame().getMyPlayer());
                     battleship.gameState.getGame().setStatus(GameStatus.GAME_OVER);
                     break;
-                case Config.PACKET_LEADERBOARD:
+                case Config.PACKET_LEADERBOARD_ID:
                     LeaderboardPacket leaderboard = (LeaderboardPacket) packet;
                     battleship.leaderboardState.setLeaderboard(leaderboard.getLeaderboard());
                     battleship.enterState(Config.SCREEN_LEADERBOARD);
@@ -190,6 +190,10 @@ public class BaseClient extends Thread {
     //Sends the users packets
     public void readyUp() {
         packetHandler.sendPacket(new ReadyPacket());
+    }
+
+    public void requestAIGame() {
+        packetHandler.sendPacket(new AIRequestPacket());
     }
 
     //gets the opponents username

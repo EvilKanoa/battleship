@@ -18,7 +18,7 @@ public class ResultPacket extends Packet {
 
     @Override
     public byte getID() {//gets the ID of the packet
-        return Config.PACKET_RESULT;
+        return Config.PACKET_RESULT_ID;
     }
 
     @Override

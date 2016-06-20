@@ -15,7 +15,7 @@ public class GameWonPacket extends Packet {
 
     @Override
     public byte getID() { //gets the ID of the packet
-        return Config.PACKET_GAME_WON;
+        return Config.PACKET_GAME_WON_ID;
     }
 
     @Override

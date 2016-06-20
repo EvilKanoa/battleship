@@ -30,11 +30,13 @@ public class LeaderboardState extends BasicGameState {
         } else {
             result = "You lost the game. :(";
         }
-        g.drawString(result, (Config.WINDOW_WIDTH / 2) - (g.getFont().getWidth(result)), 20);
+        g.drawString(result, (Config.WINDOW_WIDTH / 2) - (g.getFont().getWidth(result) / 2), 20);
+
+        g.drawString("Top Scores:", (Config.WINDOW_WIDTH / 2) - (g.getFont().getWidth("Top Scores:") / 2), 120);
 
         for (int i = 0; i < leaderboard.length; i++) {
             String str = leaderboard[i].getName() + ": " + leaderboard[i].getScore();
-            g.drawString(str, (Config.WINDOW_WIDTH / 2) - (g.getFont().getWidth(str) / 2), 100 + 30 * i);
+            g.drawString(str, (Config.WINDOW_WIDTH / 2) - (g.getFont().getWidth(str) / 2), 150 + 30 * i);
         }
     }
 

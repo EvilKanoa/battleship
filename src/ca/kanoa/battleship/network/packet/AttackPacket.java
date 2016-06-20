@@ -16,7 +16,7 @@ public class AttackPacket extends Packet {
 
     @Override
     public byte getID() {//gets the attack ID
-        return Config.PACKET_ATTACK;
+        return Config.PACKET_ATTACK_ID;
     }
 
     @Override
